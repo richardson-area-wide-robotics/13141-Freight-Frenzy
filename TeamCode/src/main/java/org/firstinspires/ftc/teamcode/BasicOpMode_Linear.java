@@ -61,7 +61,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor backright = null;
     private DcMotor frontright = null;
     private DcMotor frontleft = null;
-
+    private DcMotor spinner = null;
     private DcMotor arm = null;
     private DcMotor intake = null;
 
@@ -79,6 +79,9 @@ public class BasicOpMode_Linear extends LinearOpMode {
         frontright = hardwareMap.get(DcMotor.class, "FrontRight");
         arm = hardwareMap.get(DcMotor.class, "Arm");
         intake = hardwareMap.get(DcMotor.class, "Intake");
+        spinner = hardwareMap.get(DcMotor.class, "Spinner")
+
+
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -125,6 +128,13 @@ public class BasicOpMode_Linear extends LinearOpMode {
                 intake.setPower(-gamepad1.right_trigger);
             else
                 intake.setPower(0.0);
+            //Delivery mechanism
+            if (gamepad1.dpad_left)
+                spinner.setPower(1.0);
+            else if (gamepad1.dpad_right)
+                spinner.setPower(-0.2);
+            else
+                spinner.setPower(0.0);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
