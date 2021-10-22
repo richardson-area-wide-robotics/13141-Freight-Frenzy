@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.motors.RevRoboticsCoreHexMotor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -60,6 +61,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor backright = null;
     private DcMotor frontright = null;
     private DcMotor frontleft = null;
+
+    private DcMotor arm = null;
+    private DcMotor intake = null;
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -72,14 +77,13 @@ public class BasicOpMode_Linear extends LinearOpMode {
         backright = hardwareMap.get(DcMotor.class, "BackRight");
         frontleft = hardwareMap.get(DcMotor.class, "FrontLeft");
         frontright = hardwareMap.get(DcMotor.class, "FrontRight");
+        arm = hardwareMap.get(DcMotor.class, "Arm");
+        intake = hardwareMap.get(DcMotor.class, "Intake");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        backleft.setDirection(DcMotor.Direction.FORWARD);
         backright.setDirection(DcMotor.Direction.REVERSE);
-        frontleft.setDirection(DcMotor.Direction.FORWARD);
         frontright.setDirection(DcMotor.Direction.REVERSE);
-
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -87,28 +91,46 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
             // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
-            double rightPower;
 
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
-            double drive = -gamepad1.left_stick_y;
-            double turn  =  gamepad1.right_stick_x;
-            leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+            double y = -gamepad1.left_stick_y;
+            double x  =  gamepad1.left_stick_x * 1.1;
+            double rx = gamepad1.right_stick_x;
+
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double frontleftpower = (y + x + rx) / denominator;
+            double backleftpower = (y - x + rx) / denominator;
+            double frontrightpower = (y - x - rx) / denominator;
+            double backrightpower = (y + x - rx) / denominator;
 
             // Send calculated power to wheels
-            backleft.setPower(leftPower);
-            backright.setPower(rightPower);
-            frontright.setPower(rightPower);
-            frontleft.setPower(leftPower);
+            backleft.setPower(backleftpower);
+            backright.setPower(backrightpower);
+            frontright.setPower(frontrightpower);
+            frontleft.setPower(frontleftpower);
+
+            // Arm
+            if (gamepad1.left_bumper)
+                arm.setPower(1.0);
+            else if (gamepad1.right_bumper)
+                arm.setPower(-0.2);
+            else
+                arm.setPower(0.0);
+            // Intake
+            if (gamepad1.left_trigger > 0.01)
+                intake.setPower(gamepad1.left_trigger);
+            else if (gamepad1.right_trigger > 0.01)
+                intake.setPower(-gamepad1.right_trigger);
+            else
+                intake.setPower(0.0);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontleftpower, frontrightpower);
             telemetry.update();
+
         }
     }
 }
