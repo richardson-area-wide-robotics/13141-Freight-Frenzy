@@ -79,10 +79,12 @@ public class BasicOpMode_Linear extends LinearOpMode {
         frontright = hardwareMap.get(DcMotor.class, "FrontRight");
         arm = hardwareMap.get(DcMotor.class, "Arm");
         intake = hardwareMap.get(DcMotor.class, "Intake");
-        spinner = hardwareMap.get(DcMotor.class, "Spinner")
+        spinner = hardwareMap.get(DcMotor.class, "Spinner");
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setTargetPosition(0);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setPower(1.0);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -94,8 +96,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
         waitForStart();
         runtime.reset();
         
-        boolean pressedLastinteration = false;
+        boolean pressedRightTriggerIteration = false;
+        boolean pressedLeftTriggerIteration = true;
         double intakePower = 0.0;
+        int armPosition = 0;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -123,20 +127,22 @@ public class BasicOpMode_Linear extends LinearOpMode {
             // Arm
             if (gamepad1.left_bumper)
             {
-                arm.setTargetPosition(arm.getCurrentPosition() + 100);
+                armPosition += 100;
             }
             else if (gamepad1.right_bumper)
             {
-                arm.setTargetPosition(arm.getCurrentPosition() - 100);
+                armPosition -= 100;
             }
             else
-            {
-                arm.setTargetPosition(arm.getCurrentPosition());
-            }
+                armPosition = arm.getCurrentPosition();
+90
+
+            arm.setTargetPosition(armPosition);
+
             
             boolean leftTriggerPressed = gamepad1.left_trigger > 0.01;
             
-            if (leftTriggerPressed && !pressedLastiteration) {
+            if (leftTriggerPressed && !pressedLeftTriggerIteration) {
                 // set intakePower based on existing value of intakePower
                 // if intakePower = 1, intakePower = 0
                 // if intakePower = 0, intakePower = 1
@@ -149,12 +155,12 @@ public class BasicOpMode_Linear extends LinearOpMode {
                     intakePower = 1.0;
                 }
             }
-            pressedLastiteration = leftTriggerPressed;
+            pressedLeftTriggerIteration = leftTriggerPressed;
             
             
             boolean rightTriggerPressed = gamepad1.right_trigger > 0.01;
             
-            if (rightTriggerPressed && !pressedLastiteration) {
+            if (rightTriggerPressed && !pressedRightTriggerIteration) {
                 if (intakePower == -1.0)
                     {
                     intakePower = 0.0;
@@ -164,7 +170,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
                     intakePower = -1.0;
                 }
             }
-            pressedLastiteration = rightTriggerPressed;
+            pressedRightTriggerIteration = rightTriggerPressed;
             
             intake.setPower(intakePower);
                 
