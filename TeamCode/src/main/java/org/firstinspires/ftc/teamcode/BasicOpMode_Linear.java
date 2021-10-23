@@ -80,7 +80,9 @@ public class BasicOpMode_Linear extends LinearOpMode {
         arm = hardwareMap.get(DcMotor.class, "Arm");
         intake = hardwareMap.get(DcMotor.class, "Intake");
         spinner = hardwareMap.get(DcMotor.class, "Spinner")
-
+        arm.setMOde(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(1.0);
 
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -115,24 +117,28 @@ public class BasicOpMode_Linear extends LinearOpMode {
             frontleft.setPower(frontleftpower);
 
             // Arm
-            if (gamepad1.left_bumper)
-                arm.setPower(1.0);
-            else if (gamepad1.right_bumper)
-                arm.setPower(-0.2);
-            else
-                arm.setPower(0.0);
+            if (gamepad1.left_bumper);
+            {
+                arm.setTargetPosition(arm.getCurrentPosition() + 50);
+
+            } else (gamepad1.right_bumper);
+            {
+                arm.setTargetPosition(arm.getCurrentPosition() - 50);
+            }
+
+
             // Intake
-            if (gamepad1.left_trigger > 0.01)
+            if (gamepad1.left_trigger > 0.01);
                 intake.setPower(gamepad1.left_trigger);
             else if (gamepad1.right_trigger > 0.01)
                 intake.setPower(-gamepad1.right_trigger);
             else
                 intake.setPower(0.0);
             //Delivery mechanism
-            if (gamepad1.dpad_left)
+            if (gamepad1.dpad_left);
                 spinner.setPower(1.0);
-            else if (gamepad1.dpad_right)
-                spinner.setPower(-0.2);
+            else if (gamepad1.dpad_right);
+                spinner.setPower(-1.0);
             else
                 spinner.setPower(0.0);
 
