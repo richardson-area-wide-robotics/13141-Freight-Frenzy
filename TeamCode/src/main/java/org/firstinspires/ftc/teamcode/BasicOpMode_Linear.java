@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
+@TeleOp(name="Teleop", group="Robot code")
 public class BasicOpMode_Linear extends LinearOpMode {
 
     // Declare OpMode members.
@@ -80,7 +80,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         arm = hardwareMap.get(DcMotor.class, "Arm");
         intake = hardwareMap.get(DcMotor.class, "Intake");
         spinner = hardwareMap.get(DcMotor.class, "Spinner")
-        arm.setMOde(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setPower(1.0);
 
@@ -93,9 +93,13 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
+        
+        boolean pressedLastinteration = false;
+        double intakePower = 0.0;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            
             // Setup a variable for each drive wheel to save power level for telemetry
 
             // POV Mode uses left stick to go forward, and right stick to turn.
@@ -117,27 +121,58 @@ public class BasicOpMode_Linear extends LinearOpMode {
             frontleft.setPower(frontleftpower);
 
             // Arm
-            if (gamepad1.left_bumper);
+            if (gamepad1.left_bumper)
             {
-                arm.setTargetPosition(arm.getCurrentPosition() + 50);
-
-            } else (gamepad1.right_bumper);
-            {
-                arm.setTargetPosition(arm.getCurrentPosition() - 50);
+                arm.setTargetPosition(arm.getCurrentPosition() + 100);
             }
-
-
-            // Intake
-            if (gamepad1.left_trigger > 0.01);
-                intake.setPower(gamepad1.left_trigger);
-            else if (gamepad1.right_trigger > 0.01)
-                intake.setPower(-gamepad1.right_trigger);
+            else if (gamepad1.right_bumper)
+            {
+                arm.setTargetPosition(arm.getCurrentPosition() - 100);
+            }
             else
-                intake.setPower(0.0);
-            //Delivery mechanism
-            if (gamepad1.dpad_left);
+            {
+                arm.setTargetPosition(arm.getCurrentPosition());
+            }
+            
+            boolean leftTriggerPressed = gamepad1.left_trigger > 0.01;
+            
+            if (leftTriggerPressed && !pressedLastiteration) {
+                // set intakePower based on existing value of intakePower
+                // if intakePower = 1, intakePower = 0
+                // if intakePower = 0, intakePower = 1
+                if (intakePower == 1.0)
+                {
+                    intakePower = 0.0;
+                }
+                else
+                {
+                    intakePower = 1.0;
+                }
+            }
+            pressedLastiteration = leftTriggerPressed;
+            
+            
+            boolean rightTriggerPressed = gamepad1.right_trigger > 0.01;
+            
+            if (rightTriggerPressed && !pressedLastiteration) {
+                if (intakePower == -1.0)
+                    {
+                    intakePower = 0.0;
+                }
+                else
+                {
+                    intakePower = -1.0;
+                }
+            }
+            pressedLastiteration = rightTriggerPressed;
+            
+            intake.setPower(intakePower);
+                
+            
+            // Delivery mechanism
+            if (gamepad1.dpad_left)
                 spinner.setPower(1.0);
-            else if (gamepad1.dpad_right);
+            else if (gamepad1.dpad_right)
                 spinner.setPower(-1.0);
             else
                 spinner.setPower(0.0);
@@ -146,7 +181,6 @@ public class BasicOpMode_Linear extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontleftpower, frontrightpower);
             telemetry.update();
-
         }
     }
 }
