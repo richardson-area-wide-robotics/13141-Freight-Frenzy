@@ -98,7 +98,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
         
         boolean pressedRightTriggerIteration = false;
         boolean pressedLeftTriggerIteration = true;
+        boolean pressedLeftDpadIteration = true;
+        boolean pressedRightDpadIteration = false;
         double intakePower = 0.0;
+        double spinnerPower = 0.0;
         int armPosition = 0;
 
         // run until the end of the match (driver presses STOP)
@@ -139,7 +142,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             arm.setTargetPosition(armPosition);
 
-            
+            // Intake
             boolean leftTriggerPressed = gamepad1.left_trigger > 0.01;
             
             if (leftTriggerPressed && !pressedLeftTriggerIteration) {
@@ -173,19 +176,58 @@ public class BasicOpMode_Linear extends LinearOpMode {
             pressedRightTriggerIteration = rightTriggerPressed;
             
             intake.setPower(intakePower);
-                
-            
-            // Delivery mechanism
-            if (gamepad1.dpad_left)
+
+            /*
+             if (gamepad1.dpad_left)
                 spinner.setPower(1.0);
             else if (gamepad1.dpad_right)
                 spinner.setPower(-1.0);
             else
                 spinner.setPower(0.0);
+            */
+            
+            // Delivery mechanism
 
-            // Show the elapsed game time and wheel power.
+            boolean leftDpadPressed = gamepad1.dpad_left > 0.01;
+
+            if (leftDpadPressed && !pressedLeftDpadIteration) {
+                // set spinnerPower based on existing value of spinnerPower
+                // if spinnerPower = 1, spinnerPower = 0
+                // if spinnerPower = 0, spinnerePower = 1
+                if (spinnerPower == 1.0)
+                {
+                    spinnerPower = 0.0;
+                }
+                else
+                {
+                    spinnerPower = 1.0;
+                }
+            }
+            pressedLeftDpadIteration = leftDpadPressed;
+
+
+            boolean rightDpadPressed = gamepad1.right_trigger > 0.01;
+
+            if (rightDpadPressed && !pressedRightDpadIteration) {
+                if (spinnerPower == -1.0)
+                {
+                    spinnerPower = 0.0;
+                }
+                else
+                {
+                    spinnerPower = -1.0;
+                }
+            }
+            pressedRightDpadIteration = rightDpadPressed;
+
+            spinner.setPower(spinnerPower);
+
+
+
+            // Show the elapsed game time and wheel power, also arm position.
+            telemetry.addData("Encoder value", arm.getCurrentPosition());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontleftpower, frontrightpower);
+            telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontleftpower, frontrightpower, backleftpower, backrightpower);
             telemetry.update();
         }
     }
