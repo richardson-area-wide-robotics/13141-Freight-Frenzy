@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Teleop", group="Robot code")
+@TeleOp(name="MainTeleop", group="Robot code")
 public class BasicOpMode_Linear extends LinearOpMode {
 
     // Declare OpMode members.
@@ -64,6 +64,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
     private DcMotor spinner = null;
     private DcMotor arm = null;
     private DcMotor intake = null;
+    //private TouchSensor magnet = null;
 
     @Override
     public void runOpMode() {
@@ -73,6 +74,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
+        
         backleft  = hardwareMap.get(DcMotor.class, "BackLeft");
         backright = hardwareMap.get(DcMotor.class, "BackRight");
         frontleft = hardwareMap.get(DcMotor.class, "FrontLeft");
@@ -85,7 +87,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setPower(1.0);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+      //magnet = hardwareMap.get(TouchSensor.class, "Magnet");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -102,6 +104,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         boolean pressedRightDpadIteration = false;
         double intakePower = 0.0;
         double spinnerPower = 0.0;
+        double armPower = 1.0;
         int armPosition = 0;
 
         // run until the end of the match (driver presses STOP)
@@ -127,7 +130,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             frontright.setPower(frontrightpower);
             frontleft.setPower(frontleftpower);
 
-            // Arm
+            // Arm ----------------------------------------------------
             if (gamepad1.left_bumper)
             {
                 armPosition += 100;
@@ -141,9 +144,18 @@ public class BasicOpMode_Linear extends LinearOpMode {
 90
 
             arm.setTargetPosition(armPosition);
+            
+            /*
+             if (magnet.isPressed()) {
+                arm.setPower(0);
+            } else { // Otherwise, run the motor
+                arm.setPower(armPower);
+            }
+            */
 
-            // Intake
-            boolean leftTriggerPressed = gamepad1.left_trigger > 0.01;
+            // Intake --------------------------------------------------
+            
+           /* boolean leftTriggerPressed = gamepad1.left_trigger > 0.01;
             
             if (leftTriggerPressed && !pressedLeftTriggerIteration) {
                 // set intakePower based on existing value of intakePower
@@ -175,16 +187,16 @@ public class BasicOpMode_Linear extends LinearOpMode {
             }
             pressedRightTriggerIteration = rightTriggerPressed;
             
-            intake.setPower(intakePower);
+            intake.setPower(intakePower); */
 
-            /*
-             if (gamepad1.dpad_left)
-                spinner.setPower(1.0);
-            else if (gamepad1.dpad_right)
-                spinner.setPower(-1.0);
+            
+             if (gamepad1.left_trigger > 0.01)
+                intake.setPower(1.0);
+            else if (gamepad1.right_trigger > 0.01)
+                intake.setPower(-1.0);
             else
-                spinner.setPower(0.0);
-            */
+                intake.setPower(0.0);
+            
             
             // Delivery mechanism
 
@@ -206,7 +218,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             pressedLeftDpadIteration = leftDpadPressed;
 
 
-            boolean rightDpadPressed = gamepad1.right_trigger > 0.01;
+            boolean rightDpadPressed = gamepad1.dpad_right > 0.01;
 
             if (rightDpadPressed && !pressedRightDpadIteration) {
                 if (spinnerPower == -1.0)
@@ -226,8 +238,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             // Show the elapsed game time and wheel power, also arm position.
             telemetry.addData("Encoder value", arm.getCurrentPosition());
+            telemetry.addData("Arm Power", arm.getPower());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontleftpower, frontrightpower, backleftpower, backrightpower);
+            telemetry.addData("spinner", 
             telemetry.update();
         }
     }
