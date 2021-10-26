@@ -106,6 +106,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         double spinnerPower = 0.0;
         double armPower = 1.0;
         int armPosition = 0;
+        int[] armLevel = {0, 145, 309, 429}
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -131,7 +132,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             frontleft.setPower(frontleftpower);
 
             // Arm ----------------------------------------------------
-            if (gamepad1.left_bumper)
+            /*if (gamepad1.left_bumper)
             {
                 armPosition += 100;
             }
@@ -141,11 +142,12 @@ public class BasicOpMode_Linear extends LinearOpMode {
             }
             else
                 armPosition = arm.getCurrentPosition();
-90
+
 
             arm.setTargetPosition(armPosition);
+            */
             
-            /*
+          
              if (magnet.isPressed()) {
                 arm.setPower(0);
             } else { // Otherwise, run the motor
