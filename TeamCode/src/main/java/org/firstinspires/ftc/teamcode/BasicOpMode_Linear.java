@@ -91,8 +91,13 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        backright.setDirection(DcMotor.Direction.REVERSE);
+        /*backright.setDirection(DcMotor.Direction.REVERSE);
         frontright.setDirection(DcMotor.Direction.REVERSE);
+        */
+        //this is also a test run for switching motor direction
+        backleft.setDirection(DcMotor.Direction.REVERSE);
+        frontleft.setDirection(DcMotor.Direction.REVERSE);
+        
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -114,7 +119,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             // Setup a variable for each drive wheel to save power level for telemetry
 
             // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
+            // - This uses basic math to combine motions and is easier to drive straight
             double y = -gamepad1.left_stick_y;
             double x  =  gamepad1.left_stick_x * 1.1;
             double rx = gamepad1.right_stick_x;
@@ -124,6 +129,16 @@ public class BasicOpMode_Linear extends LinearOpMode {
             double backleftpower = (y - x + rx) / denominator;
             double frontrightpower = (y - x - rx) / denominator;
             double backrightpower = (y + x - rx) / denominator;
+            
+            
+            //This is test code to see if I can switch the stick inputs
+            /*double frontleftpower = (y + x - rx) / denominator;
+            double backleftpower = (y + x + rx) / denominator;
+            double frontrightpower = (y - x + rx) / denominator;
+            double backrightpower = (y - x - rx) / denominator;
+            */
+            
+        
 
             // Send calculated power to wheels
             backleft.setPower(backleftpower);
@@ -132,11 +147,11 @@ public class BasicOpMode_Linear extends LinearOpMode {
             frontleft.setPower(frontleftpower);
 
             // Arm ----------------------------------------------------
-            /*if (gamepad1.left_bumper)
+            (gamepad1.left_bumper)
             {
                 armPosition += 100;
             }
-            else if (gamepad1.right_bumper)
+            else if (gamepad1.left_Trigger > 0.01)
             {
                 armPosition -= 100;
             }
@@ -145,9 +160,26 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
 
             arm.setTargetPosition(armPosition);
-            */
+           
+            //arm automation set up goes here 
+            if (gamepad1.x) {
+                armPosition = armLevel[0];
+            }
+            else if (gamepad1.y) {
+                armPosition = armLevel[1];
+            }
+            else if (gamepad1.b) {
+                armPosition = armLevel[2];
+            }
+            else if (gamepad1.a) {
+                armPosition = armLevel[3];
+            }
+            arm.setTargetPosition(armPosition);
+           
+            
             
           
+            /*
              if (magnet.isPressed()) {
                 arm.setPower(0);
             } else { // Otherwise, run the motor
@@ -192,7 +224,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             intake.setPower(intakePower); */
 
             
-             if (gamepad1.left_trigger > 0.01)
+             if (gamepad1.right_bumper)
                 intake.setPower(1.0);
             else if (gamepad1.right_trigger > 0.01)
                 intake.setPower(-1.0);
@@ -202,7 +234,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             
             // Delivery mechanism
 
-            boolean leftDpadPressed = gamepad1.dpad_left > 0.01;
+            boolean leftDpadPressed = gamepad1.dpad_left;
 
             if (leftDpadPressed && !pressedLeftDpadIteration) {
                 // set spinnerPower based on existing value of spinnerPower
@@ -220,7 +252,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             pressedLeftDpadIteration = leftDpadPressed;
 
 
-            boolean rightDpadPressed = gamepad1.dpad_right > 0.01;
+            boolean rightDpadPressed = gamepad1.dpad_right;
 
             if (rightDpadPressed && !pressedRightDpadIteration) {
                 if (spinnerPower == -1.0)
@@ -242,8 +274,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
             telemetry.addData("Encoder value", arm.getCurrentPosition());
             telemetry.addData("Arm Power", arm.getPower());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontleftpower, frontrightpower, backleftpower, backrightpower);
-            telemetry.addData("spinner", 
+            telemetry.addData("Motors", "frontleft (%.2f), frontright (%.2f), backleft (%.2f), backright (%.2f)" frontleftpower, frontrightpower, backleftpower, backrightpower);
+            telemetry.addData("spinner", spinner.getPower());
             telemetry.update();
         }
     }
