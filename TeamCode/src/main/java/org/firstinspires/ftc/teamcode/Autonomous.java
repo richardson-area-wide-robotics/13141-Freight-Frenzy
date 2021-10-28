@@ -72,12 +72,11 @@ public class Autonomous_Mode1 extends LinearOpMode {
     public class AutoRedBoth extends LinearOpMode {
 
         // Declare Devices
-        DcMotor leftFrontMotor = null;
-        DcMotor rightFrontMotor = null;
-        DcMotor leftRearMotor = null;
-        DcMotor rightRearMotor = null;
-        AnalogInput redEye = null;
-        OpticalDistanceSensor mrOds = null;
+        DcMotor frontleft = null;
+        DcMotor frontright = null;
+        DcMotor backleft = null;
+        DcMotor backright = null;
+     
 
 
         // drive motor position variables
