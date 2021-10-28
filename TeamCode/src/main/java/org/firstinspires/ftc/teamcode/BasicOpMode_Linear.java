@@ -272,6 +272,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             // Show the elapsed game time and wheel power, also arm position.
             telemetry.addData("Encoder value", arm.getCurrentPosition());
+            telemetry.addData("Motor position", frontleft.getCurrentPosition(), frontright.getCurrentPosition(), backleft.getCurrentPosition(), backright.getCurrentPosition()); 
             telemetry.addData("Arm Power", arm.getPower());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "frontleft (%.2f), frontright (%.2f), backleft (%.2f), backright (%.2f)" frontleftpower, frontrightpower, backleftpower, backrightpower);
