@@ -111,7 +111,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         double spinnerPower = 0.0;
         double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 309, 429}
+        int[] armLevel = {0, 145, 309, 429};
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -147,11 +147,11 @@ public class BasicOpMode_Linear extends LinearOpMode {
             frontleft.setPower(frontleftpower);
 
             // Arm ----------------------------------------------------
-            (gamepad1.left_bumper)
+            if (gamepad1.left_bumper)
             {
                 armPosition += 100;
             }
-            else if (gamepad1.left_Trigger > 0.01)
+            else if (gamepad1.left_trigger > 0.01)
             {
                 armPosition -= 100;
             }
@@ -272,10 +272,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             // Show the elapsed game time and wheel power, also arm position.
             telemetry.addData("Encoder value", arm.getCurrentPosition());
-            telemetry.addData("Motor position", frontleft.getCurrentPosition(), frontright.getCurrentPosition(), backleft.getCurrentPosition(), backright.getCurrentPosition()); 
+            telemetry.addData("Motor position", String.valueOf(frontleft.getCurrentPosition()), frontright.getCurrentPosition(), backleft.getCurrentPosition(), backright.getCurrentPosition());
             telemetry.addData("Arm Power", arm.getPower());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "frontleft (%.2f), frontright (%.2f), backleft (%.2f), backright (%.2f)" frontleftpower, frontrightpower, backleftpower, backrightpower);
+            telemetry.addData("Motors", "frontleft (%.2f), frontright (%.2f), backleft (%.2f), backright (%.2f)", frontleftpower, frontrightpower, backleftpower, backrightpower);
             telemetry.addData("spinner", spinner.getPower());
             telemetry.update();
         }

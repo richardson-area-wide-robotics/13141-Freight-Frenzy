@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -63,11 +63,9 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Autonomous", group="Robot Code")
-//@Disabled
-public class Autonomous_Mode1 extends LinearOpMode {
 
-    @Autonomous(name="AutoRedBoth", group="Linear Opmode")  // @TeleOp(...) is the other common choice
+
+    @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="AutoRedBoth", group="Linear Opmode")  // @TeleOp(...) is the other common choice
 // @Disabled
     public class AutoRedBoth extends LinearOpMode {
 
@@ -88,8 +86,6 @@ public class Autonomous_Mode1 extends LinearOpMode {
         private double slow = 0.1; // slow speed
         private double clicksPerInch = 87.5; // empirically measured
         private double clicksPerDeg = 21.94; // empirically measured
-        private double lineThreshold = 0.7; // floor should be below this value, line above
-        private double redThreshold = 1.9; // red should be below this value, blue above
 
         @Override
         public void runOpMode() {
@@ -113,6 +109,10 @@ public class Autonomous_Mode1 extends LinearOpMode {
             frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontright.setTargetPosition(0);
+            frontleft.setTargetPosition(0);
+            backleft.setTargetPosition(0);
+            backright.setTargetPosition(0);
             frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -123,21 +123,11 @@ public class Autonomous_Mode1 extends LinearOpMode {
 
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
-            moveForward(16, fast);
-            turnClockwise(-45, fast);
-            moveForward(33, fast);
-            turnClockwise(-45, fast);
-            moveForward(24, fast);
-            moveToLine(24, medium);
-            pushRedButton();
-            moveForward(-6, fast);
-            turnClockwise(-3, medium); // aiming tweak
-            moveRight(36, fast);
-            moveToLine(24, medium);
-            pushRedButton();
-            moveForward(-12, fast);
-            turnClockwise(-135, fast);
-            moveForward(66, fast);
+            moveForward(20, fast);
+            turnClockwise(-90, fast);
+            moveForward(20, fast);
+
+
         }
 
         private void moveForward(int howMuch, double speed) {
@@ -275,54 +265,6 @@ public class Autonomous_Mode1 extends LinearOpMode {
             backleft.setPower(0);
             backright.setPower(0);
         }
-        private void moveToLine(int howMuch, double speed) {
-            // howMuch is in inches. The robot will stop if the line is found before
-            // this distance is reached. A negative howMuch moves left, positive moves right.
-
-            // fetch motor positions
-            lfPos = frontleft.getCurrentPosition();
-            rfPos = frontright.getCurrentPosition();
-            lrPos = backleft.getCurrentPosition();
-            rrPos = backright.getCurrentPosition();
-
-            // calculate new targets
-            lfPos += howMuch * clicksPerInch;
-            rfPos -= howMuch * clicksPerInch;
-            lrPos -= howMuch * clicksPerInch;
-            rrPos += howMuch * clicksPerInch;
-
-            // move robot to new position
-            fronteft.setTargetPosition(lfPos);
-            frontright.setTargetPosition(rfPos);
-            backleft.setTargetPosition(lrPos);
-            backright.setTargetPosition(rrPos);
-            frontleft.setPower(speed);
-            frontright.setPower(speed);
-            backleft.setPower(speed);
-            backright.setPower(speed);
-
-            // wait for move to complete
-            while (frontleft.isBusy() && frontright.isBusy() &&
-                    backleft.isBusy() && backright.isBusy()) {
-                if (mrOds.getLightDetected() > lineThreshold) break;
-
-                // Display it for the driver.
-                telemetry.addLine("Move To Line");
-                telemetry.addData("Target", "%7d :%7d", lfPos, rfPos, lrPos, rrPos);
-                telemetry.addData("Actual", "%7d :%7d", frontleft.getCurrentPosition(),
-                        frontright.getCurrentPosition(), backleft.getCurrentPosition(),
-                        backright.getCurrentPosition());
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            frontleft.setPower(0);
-            frontright.setPower(0);
-            backleft.setPower(0);
-            backright.setPower(0);
 
         }
 
-        }
-
-    }
