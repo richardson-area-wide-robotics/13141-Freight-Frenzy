@@ -93,11 +93,9 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // Reverse the motor that runs backwards when connected directly to the battery
         backright.setDirection(DcMotor.Direction.REVERSE);
         frontright.setDirection(DcMotor.Direction.REVERSE);
-        /*
-        //this is also a test run for switching motor direction
-        backleft.setDirection(DcMotor.Direction.REVERSE);
-        frontleft.setDirection(DcMotor.Direction.REVERSE);
-        */
+        frontleft.setDirection(DcMotor.Direction.FORWARD);
+        backleft.setDirection(DcMotor.Direction.FORWARD);
+    
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
