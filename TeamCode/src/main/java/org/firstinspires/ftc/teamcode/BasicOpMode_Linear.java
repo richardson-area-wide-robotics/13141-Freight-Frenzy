@@ -127,7 +127,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
             double backleftpower = (y - x + rx) / denominator;
             double frontrightpower = (y - x - rx) / denominator;
             double backrightpower = (y + x - rx) / denominator;
-            
+
             
             //This is test code to see if I can switch the stick inputs
             /*double frontleftpower = (y + x - rx) / denominator;
@@ -135,6 +135,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
             double frontrightpower = (y - x + rx) / denominator;
             double backrightpower = (y - x - rx) / denominator;
             */
+
+
             
         
 
@@ -145,31 +147,29 @@ public class BasicOpMode_Linear extends LinearOpMode {
             frontleft.setPower(frontleftpower);
 
             // Arm ----------------------------------------------------
-            if (gamepad1.left_bumper)
+            /*if (gamepad1.left_bumper)
             {
-                armPosition += 100;
+                armPosition += 10;
             }
             else if (gamepad1.left_trigger > 0.01)
             {
-                armPosition -= 100;
+                armPosition -= 10;
             }
             else
-                armPosition = arm.getCurrentPosition();
+            */   // armManualPosition = arm.getCurrentPosition();
 
-
-            arm.setTargetPosition(armPosition);
            
             //arm automation set up goes here 
             if (gamepad1.x) {
                 armPosition = armLevel[0];
             }
-            else if (gamepad1.y) {
+            else if (gamepad1.a) {
                 armPosition = armLevel[1];
             }
             else if (gamepad1.b) {
                 armPosition = armLevel[2];
             }
-            else if (gamepad1.a) {
+            else if (gamepad1.y) {
                 armPosition = armLevel[3];
             }
             arm.setTargetPosition(armPosition);
@@ -224,11 +224,12 @@ public class BasicOpMode_Linear extends LinearOpMode {
             
              if (gamepad1.right_bumper)
                 intake.setPower(1.0);
-            else if (gamepad1.right_trigger > 0.01)
-                intake.setPower(-1.0);
+            else if (gamepad1.left_bumper)
+                 intake.setPower(-1.0);
+
             else
                 intake.setPower(0.0);
-            
+            //else if (gamepad1.right_trigger > 0.01)
             
             // Delivery mechanism
 

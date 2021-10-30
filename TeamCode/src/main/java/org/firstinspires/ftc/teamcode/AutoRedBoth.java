@@ -81,7 +81,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private int lfPos; private int rfPos; private int lrPos; private int rrPos;
 
         // operational constants
-        private double fast = 0.5; // Limit motor power to this value for Andymark RUN_USING_ENCODER mode
+        private double fast = .75; // Limit motor power to this value for Andymark RUN_USING_ENCODER mode
         private double medium = 0.3; // medium speed
         private double slow = 0.1; // slow speed
         private double clicksPerInch = 44.56; // empirically measured
@@ -93,7 +93,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
 
             // Initialize the hardware variables.
-            backleft  = hardwareMap.get(DcMotor.class, "BackLeft");        backright = hardwareMap.get(DcMotor.class, "BackRight");
+            backleft  = hardwareMap.get(DcMotor.class, "BackLeft");
+            backright = hardwareMap.get(DcMotor.class, "BackRight");
             frontleft = hardwareMap.get(DcMotor.class, "FrontLeft");
             frontright = hardwareMap.get(DcMotor.class, "FrontRight");
 
@@ -124,8 +125,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             moveForward(20, fast);
-            turnClockwise(-90, fast);
-            moveForward(20, fast);
+
+
 
 
         }
@@ -145,19 +146,19 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             lrPos += howMuch * clicksPerInch;
             rrPos += howMuch * clicksPerInch;
 
-            // move robot to new position
-            frontleft.setTargetPosition(lfPos);
-            frontright.setTargetPosition(rfPos);
-            backright.setTargetPosition(lrPos);
-            backright.setTargetPosition(rrPos);
             frontleft.setPower(speed);
             frontright.setPower(speed);
             backleft.setPower(speed);
             backright.setPower(speed);
+            // move robot to new position
+            frontleft.setTargetPosition(lfPos);
+            frontright.setTargetPosition(rfPos);
+            backleft.setTargetPosition(lrPos);
+            backright.setTargetPosition(rrPos);
 
             // wait for move to complete
-            while (frontleft.isBusy() && frontright.isBusy() &&
-                    backleft.isBusy() && backright.isBusy()) {
+            while (frontleft.isBusy() || frontright.isBusy() ||
+                    backleft.isBusy() || backright.isBusy()) {
 
                 // Display it for the driver.
                 telemetry.addLine("Move Foward");
