@@ -90,6 +90,9 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double clicksPerInch = 44.56; // empirically measured
         private double clicksPerDeg = 21.94; // empirically measured
         private double tol = .1 * clicksPerInch;
+        private double armPower = 1.0;
+        int armPosition = 0;
+        int[] armLevel = {0, 429};
 
         @Override
         public void runOpMode() {
@@ -118,16 +121,24 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            spinner.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontright.setTargetPosition(0);
             frontleft.setTargetPosition(0);
             backleft.setTargetPosition(0);
             backright.setTargetPosition(0);
             arm.setTargetPosition(0);
+            intake.setTargetPosition(0);
+            spinner.setTargetPosition(0);
             frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            spinner.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            arm.setPower(1.0);
+            arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             // Wait for the game to start (driver presses PLAY)
             waitForStart();
@@ -141,7 +152,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             strafe(10, slow);
             spinnerMov(30, medium);
             strafe(8, slow);
-            moveForward(
+            moveForward(120,fast);
             
             
 
