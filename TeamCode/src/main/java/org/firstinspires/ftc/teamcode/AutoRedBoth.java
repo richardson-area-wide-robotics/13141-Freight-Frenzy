@@ -76,6 +76,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         DcMotor backright = null;
         DcMotor arm = null;
         DcMotor intake = null;
+        DcMotor spinner = null;
      
 
 
@@ -88,6 +89,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double slow = 0.15; // slow speed
         private double clicksPerInch = 44.56; // empirically measured
         private double clicksPerDeg = 21.94; // empirically measured
+        private double tol = .1 * clicksPerInch;
 
         @Override
         public void runOpMode() {
@@ -101,6 +103,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             frontright = hardwareMap.get(DcMotor.class, "FrontRight");
             arm = hardwareMap.get(DcMotor.class, "Arm");
             intake = hardwareMap.get(DcMotor.class, "Intake");
+            spinner = hardwareMap.get(DcMotor.class, "Spinner");
 
 
             // The right motors need reversing
@@ -133,6 +136,12 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             moveForward(21, fast);
             intakePosition(5, fast);
+            strafe(-27, medium);
+            turnClockwise(90, medium);
+            strafe(10, slow);
+            spinnerMov(30, medium);
+            strafe(8, slow);
+            moveForward(
             
             
 
@@ -247,6 +256,62 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             }
 
         }
+         private void strafe(int howMuch, double speed) {
+            // howMuch is in inches. A negative howMuch moves backward.
+
+            // fetch motor positions
+            flPos = frontleft.getCurrentPosition();
+            frPos = frontright.getCurrentPosition();
+            blPos = backleft.getCurrentPosition();
+            brPos = backright.getCurrentPosition();
+
+            // calculate new targets
+            flPos -= howMuch * clicksPerInch;
+            frPos += howMuch * clicksPerInch;
+            blPos += howMuch * clicksPerInch;
+            brPos -= howMuch * clicksPerInch;
+
+            // move robot to new position
+            frontleft.setPower(speed);
+            frontright.setPower(speed);
+            backleft.setPower(speed);
+            backright.setPower(speed);
+
+            frontleft.setTargetPosition(flPos);
+            frontright.setTargetPosition(frPos);
+            backleft.setTargetPosition(blPos);
+            backright.setTargetPosition(brPos);
+
+
+            while ( Math.abs(flPos - frontleft.getCurrentPosition()) > tol
+                    || Math.abs(frPos - frontright.getCurrentPosition()) > tol
+                    || Math.abs(blPos - backleft.getCurrentPosition()) > tol
+                    || Math.abs(brPos - backright.getCurrentPosition()) > tol) {
+                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+          private void spinnerMov(int howMuch, double speed) {
+
+            spinner.getCurrentPosition();
+            spinner.setTargetPosition((int) (howMuch * clicksPerInch));
+            spinner.setPower(speed);
+
+            while (spinner.getCurrentPosition() < howMuch * clicksPerInch ) {
+
+                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
 
         private void turnClockwise(int whatAngle, double speed) {
             // whatAngle is in degrees. A negative whatAngle turns counterclockwise.
