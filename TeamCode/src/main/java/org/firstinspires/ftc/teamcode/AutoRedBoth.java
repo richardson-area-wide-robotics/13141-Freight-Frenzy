@@ -74,6 +74,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         DcMotor frontright = null;
         DcMotor backleft = null;
         DcMotor backright = null;
+        DcMotor arm = null;
+        DcMotor intake = null;
      
 
 
@@ -82,8 +84,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
         // operational constants
         private double fast = .75; // Limit motor power to this value for Andymark RUN_USING_ENCODER mode
-        private double medium = 0.3; // medium speed
-        private double slow = 0.1; // slow speed
+        private double medium = 0.5; // medium speed
+        private double slow = 0.15; // slow speed
         private double clicksPerInch = 44.56; // empirically measured
         private double clicksPerDeg = 21.94; // empirically measured
 
@@ -97,6 +99,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             backright = hardwareMap.get(DcMotor.class, "BackRight");
             frontleft = hardwareMap.get(DcMotor.class, "FrontLeft");
             frontright = hardwareMap.get(DcMotor.class, "FrontRight");
+            arm = hardwareMap.get(DcMotor.class, "Arm");
+            intake = hardwareMap.get(DcMotor.class, "Intake");
 
 
             // The right motors need reversing
@@ -110,21 +114,27 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontright.setTargetPosition(0);
             frontleft.setTargetPosition(0);
             backleft.setTargetPosition(0);
             backright.setTargetPosition(0);
+            arm.setTargetPosition(0);
             frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // Wait for the game to start (driver presses PLAY)
             waitForStart();
 
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
-            moveForward(20, fast);
+            moveForward(21, fast);
+            intakePosition(5, fast);
+            
+            
 
 
 
@@ -219,6 +229,22 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             frontright.setPower(0);
             backleft.setPower(0);
             backright.setPower(0);
+
+        }
+         private void intakePosition(int howMuch, double speed) {
+
+            intake.getCurrentPosition();
+            intake.setTargetPosition((int) (howMuch * clicksPerInch));
+            intake.setPower(speed);
+
+            while (intake.getCurrentPosition() < howMuch * clicksPerInch ) {
+
+                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
         }
 
