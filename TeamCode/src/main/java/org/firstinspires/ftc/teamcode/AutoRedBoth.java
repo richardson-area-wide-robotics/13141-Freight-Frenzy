@@ -92,7 +92,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 429};
+        int[] armLevel = {0, 433};
 
         @Override
         public void runOpMode() {
@@ -123,6 +123,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             spinner.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
             frontright.setTargetPosition(0);
             frontleft.setTargetPosition(0);
             backleft.setTargetPosition(0);
@@ -130,6 +131,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             arm.setTargetPosition(0);
             intake.setTargetPosition(0);
             spinner.setTargetPosition(0);
+
             frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -146,18 +148,16 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             moveForward(21, fast);
+            arm.setTargetPosition(armLevel[1]);
+            while (arm.isBusy()) {}
+
             intakePosition(5, fast);
-            strafe(-27, medium);
             turnClockwise(90, medium);
-            strafe(10, slow);
-            spinnerMov(30, medium);
-            strafe(8, slow);
-            moveForward(120,fast);
-            
-            
 
+            // arm.setTargetPosition(armLevel[0]);
+            // while (arm.isBusy()) {}
 
-
+            // moveForward(60, fast);
 
         }
 
@@ -193,8 +193,10 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
                 // Display it for the driver.
                 telemetry.addLine("Move Foward");
                 telemetry.addData("Target", "%7d :%7d", lfPos, rfPos, lrPos, rrPos);
-                telemetry.addData("Actual", "%7d :%7d", frontleft.getCurrentPosition(),
-                        frontright.getCurrentPosition(),backleft.getCurrentPosition(),
+                telemetry.addData("Actual", "%7d :%7d",
+                        frontleft.getCurrentPosition(),
+                        frontright.getCurrentPosition(),
+                        backleft.getCurrentPosition(),
                         backright.getCurrentPosition());
                 telemetry.update();
             }
@@ -271,16 +273,16 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             // howMuch is in inches. A negative howMuch moves backward.
 
             // fetch motor positions
-            flPos = frontleft.getCurrentPosition();
-            frPos = frontright.getCurrentPosition();
-            blPos = backleft.getCurrentPosition();
-            brPos = backright.getCurrentPosition();
+            lfPos = frontleft.getCurrentPosition();
+            rfPos = frontright.getCurrentPosition();
+            lrPos = backleft.getCurrentPosition();
+            rrPos = backright.getCurrentPosition();
 
             // calculate new targets
-            flPos -= howMuch * clicksPerInch;
-            frPos += howMuch * clicksPerInch;
-            blPos += howMuch * clicksPerInch;
-            brPos -= howMuch * clicksPerInch;
+            lfPos -= howMuch * clicksPerInch;
+            rfPos += howMuch * clicksPerInch;
+            lrPos += howMuch * clicksPerInch;
+            rrPos -= howMuch * clicksPerInch;
 
             // move robot to new position
             frontleft.setPower(speed);
@@ -288,16 +290,16 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             backleft.setPower(speed);
             backright.setPower(speed);
 
-            frontleft.setTargetPosition(flPos);
-            frontright.setTargetPosition(frPos);
-            backleft.setTargetPosition(blPos);
-            backright.setTargetPosition(brPos);
+            frontleft.setTargetPosition(lrPos);
+            frontright.setTargetPosition(rfPos);
+            backleft.setTargetPosition(lrPos);
+            backright.setTargetPosition(rrPos);
 
 
-            while ( Math.abs(flPos - frontleft.getCurrentPosition()) > tol
-                    || Math.abs(frPos - frontright.getCurrentPosition()) > tol
-                    || Math.abs(blPos - backleft.getCurrentPosition()) > tol
-                    || Math.abs(brPos - backright.getCurrentPosition()) > tol) {
+            while ( Math.abs(lfPos - frontleft.getCurrentPosition()) > tol
+                    || Math.abs(rfPos - frontright.getCurrentPosition()) > tol
+                    || Math.abs(lrPos - backleft.getCurrentPosition()) > tol
+                    || Math.abs(rrPos - backright.getCurrentPosition()) > tol) {
                 try {
                     Thread.sleep(5);
                 } catch (InterruptedException e) {
