@@ -88,7 +88,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double medium = 0.5; // medium speed
         private double slow = 0.15; // slow speed
         private double clicksPerInch = 44.56; // empirically measured
-        private double clicksPerDeg = 21.94; // empirically measured
+        private double clicksPerDeg = 10.97; // empirically measured
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
@@ -147,15 +147,15 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
-            moveForward(21, fast);
+            moveForward(19, fast);
             arm.setTargetPosition(armLevel[1]);
             while (arm.isBusy()) {}
 
             intakePosition(5, fast);
             turnClockwise(90, medium);
 
-            // arm.setTargetPosition(armLevel[0]);
-            // while (arm.isBusy()) {}
+            arm.setTargetPosition(armLevel[0]);
+            while (arm.isBusy()) {}
 
             // moveForward(60, fast);
 
