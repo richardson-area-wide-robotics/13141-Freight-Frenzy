@@ -147,10 +147,11 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
-            moveForward(18, fast);
             arm.setTargetPosition(armLevel[2]);
             while (arm.isBusy()) {}
-
+            
+            moveForward(18, fast);
+            
             intakePosition(5, fast);
             while (intake.isBusy()) {}
 
@@ -159,7 +160,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             arm.setTargetPosition(armLevel[1]);
             while (arm.isBusy()) {}
 
-            moveForward(60, fast);
+            moveForward(70, fast);
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
