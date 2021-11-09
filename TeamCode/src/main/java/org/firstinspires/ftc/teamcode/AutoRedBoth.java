@@ -87,12 +87,12 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double fast = .75; // Limit motor power to this value for Andymark RUN_USING_ENCODER mode
         private double medium = 0.5; // medium speed
         private double slow = 0.15; // slow speed
-        private double clicksPerInch = 44.56; // empirically measured
-        private double clicksPerDeg = 10.97; // empirically measured
+        private double clicksPerInch = 44.56; // empirically measured 4x encoding
+        private double clicksPerDeg = 9.45 ; // empirically measured 4x encoding
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 433};
+        int[] armLevel = {0, 145, 433};
 
         @Override
         public void runOpMode() {
@@ -147,17 +147,22 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
-            moveForward(19, fast);
-            arm.setTargetPosition(armLevel[1]);
+            moveForward(18, fast);
+            arm.setTargetPosition(armLevel[2]);
             while (arm.isBusy()) {}
 
             intakePosition(5, fast);
-            turnClockwise(90, medium);
+            while (intake.isBusy()) {}
+
+            turnClockwise(-90, medium);
+
+            arm.setTargetPosition(armLevel[1]);
+            while (arm.isBusy()) {}
+
+            moveForward(60, fast);
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
-
-            // moveForward(60, fast);
 
         }
 
