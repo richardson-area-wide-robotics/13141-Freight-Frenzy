@@ -65,9 +65,9 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
 
 
-    @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="AutoRedBoth", group="Linear Opmode")  // @TeleOp(...) is the other common choice
+    @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="SPAutoBlue", group="Linear Opmode")  // @TeleOp(...) is the other common choice
 // @Disabled
-    public class AutoRedBoth extends LinearOpMode {
+    public class SPAutoBlue extends LinearOpMode {
 
         // Declare Devices
         DcMotor frontleft = null;
@@ -88,11 +88,12 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double medium = 0.5; // medium speed
         private double slow = 0.15; // slow speed
         private double clicksPerInch = 44.56; // empirically measured 4x encoding
-        private double clicksPerDeg = 9.45 ; // empirically measured 4x encoding
+        private double clicksPerDeg = 6.22 ; // empirically measured 4x encoding
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
         int[] armLevel = {0, 145, 433};
+
 
         @Override
         public void runOpMode() {
@@ -147,15 +148,20 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
+            //All moveforwards are mostly calculated
             arm.setTargetPosition(armLevel[2]);
             while (arm.isBusy()) {}
-            
-            moveForward(18, fast);
-            
+
+            moveForward(2, fast);
+
+            turnClockwise(-45, medium);
+
+            moveForward(15, fast);
+
             intakePosition(5, fast);
             while (intake.isBusy()) {}
 
-            turnClockwise(-90, medium);
+            turnClockwise(-45, medium);
 
             arm.setTargetPosition(armLevel[1]);
             while (arm.isBusy()) {}
@@ -164,6 +170,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
+
+
 
         }
 
