@@ -93,7 +93,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double armPower = 1.0;
         int armPosition = 0;
         int[] armLevel = {0, 145, 433};
-        private double 45 = 90 * 9.45 - 570.6
+        //private double 45 = 90 * 9.45 - 570.6
 
         @Override
         public void runOpMode() {
@@ -160,7 +160,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
             moveForward(5, fast); //Will make it move forward into direction of Hub
 
-            turnClockwise(-45, medium);
+            turnClockwise(-29, medium); //this should perform a 45 degree turn 
 
             arm.setTargetPosition(armLevel[2]);
             while (arm.isBusy()) {}
@@ -170,7 +170,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             intakePosition(5, fast);
             while (intake.isBusy()) {}
 
-            turnClockwise(45, medium);
+            turnClockwise(29, medium); //this should perform a 45 degree turn
 
             arm.setTargetPosition(armLevel[1]);
             while (arm.isBusy()) {}
