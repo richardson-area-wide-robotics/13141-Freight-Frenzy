@@ -149,12 +149,12 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             //All moveforwards with number 5 need to be calculated still
-            moveForward(5, fast); // set up position to turn and back up into delivery mechanism
+            moveForward(30-18, fast); // set up position to turn and back up into delivery mechanism
 
             turnClockwise(-90, medium);
 
 
-            moveForward(-5, medium); //this will make it go backward into the carousel
+            moveForward(-40-18, medium); //this will make it go backward into the carousel
 
             spinnerMov(10, medium);
 
