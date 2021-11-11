@@ -109,7 +109,7 @@ public class BasicOpMode_Linear extends LinearOpMode {
         double spinnerPower = 0.0;
         double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 309, 433};
+        int[] armLevel = {0, 145, 309, 436};
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {

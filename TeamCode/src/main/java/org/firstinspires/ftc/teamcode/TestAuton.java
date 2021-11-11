@@ -86,13 +86,13 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         // operational constants
         private double fast = .75; // Limit motor power to this value for Andymark RUN_USING_ENCODER mode
         private double medium = 0.5; // medium speed
-        private double slow = 0.15; // slow speed
+        private double slow = 0.30; // slow speed
         private double clicksPerInch = 44.56; // empirically measured 4x encoding
-        private double clicksPerDeg = 9.45 ; // empirically measured 4x encoding
+        private double clicksPerDeg = 9.65 ; // empirically measured 4x encoding
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 433};
+        int[] armLevel = {0, 145, 438};
         //private double 45 = 90 * 9.45 - 570.6
 
         @Override
@@ -149,33 +149,35 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             //All moveforwards with number 5 need to be calculated still
-            moveForward(12, fast); // set up position to turn and back up into delivery mechanism
+            moveForward(6, medium); // set up position to turn and back up into delivery mechanism
 
             turnClockwise(-90, medium);
 
 
-            moveForward(-22, medium); //this will make it go backward into the carousel
+            moveForward(-18, slow); //this will make it go backward into the carousel
 
-            spinnerMov(10, medium);
+            spinnerMov(21, fast);
 
-            moveForward(5, fast); //Will make it move forward into direction of Hub
+            moveForward(3, fast); //Will make it move forward into direction of Hub
 
-            turnClockwise(29, medium); //this should perform a 45 degree turn 
+            turnClockwise(45, medium); //this should perform a 45 degree turn
 
             arm.setTargetPosition(armLevel[2]);
             while (arm.isBusy()) {}
 
-            moveForward(8, medium); //if not near the hub
+            moveForward(32, medium); //if not near the hub
 
             intakePosition(5, fast);
             while (intake.isBusy()) {}
 
-            turnClockwise(-29, medium); //this should perform a 45 degree turn
+            moveForward(-10, fast);
+
+            turnClockwise(-40, medium); //this should perform a 45 degree turn
 
             arm.setTargetPosition(armLevel[1]);
             while (arm.isBusy()) {}
 
-            moveForward(80, fast); // moving into warehouse park
+            moveForward(75, fast); // moving into warehouse park
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
@@ -185,7 +187,18 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
         private void moveForward(int howMuch, double speed) {
             // howMuch is in inches. A negative howMuch moves backward.
-
+            frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontright.setTargetPosition(0);
+            frontleft.setTargetPosition(0);
+            backleft.setTargetPosition(0);
+            backright.setTargetPosition(0);
+            frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             // fetch motor positions
             lfPos = frontleft.getCurrentPosition();
             rfPos = frontright.getCurrentPosition();
@@ -350,7 +363,18 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
         private void turnClockwise(int whatAngle, double speed) {
             // whatAngle is in degrees. A negative whatAngle turns counterclockwise.
-
+            frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontright.setTargetPosition(0);
+            frontleft.setTargetPosition(0);
+            backleft.setTargetPosition(0);
+            backright.setTargetPosition(0);
+            frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             // fetch motor positions
             lfPos = frontleft.getCurrentPosition();
             rfPos = frontright.getCurrentPosition();
