@@ -92,7 +92,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 438};
+        int[] armLevel = {0, 145, 440};
         //private double 45 = 90 * 9.45 - 570.6
 
         @Override
@@ -152,7 +152,6 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             moveForward(6, medium); // set up position to turn and back up into delivery mechanism
 
             turnClockwise(-90, medium);
-
 
             moveForward(-18, slow); //this will make it go backward into the carousel
 
@@ -400,6 +399,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             // wait for move to complete
             while (frontleft.isBusy() && frontright.isBusy() &&
                     backleft.isBusy() && backright.isBusy()) {
+                
 
                 // Display it for the driver.
                 telemetry.addLine("Turn Clockwise");
@@ -409,6 +409,12 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
                         backright.getCurrentPosition());
                 telemetry.update();
             }
+            try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            
 
             // Stop all motion;
             frontleft.setPower(0);
