@@ -92,7 +92,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 445};
+        int[] armLevel = {0, 145, 465};
         //private double 45 = 90 * 9.45 - 570.6
 
         @Override
@@ -159,28 +159,28 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
             moveForward(3, fast); //Will make it move forward into direction of Hub
 
-            turnClockwise(45, medium); //this should perform a 45 degree turn
+            turnClockwise(46, medium); //this should perform a 45 degree turn
 
             arm.setTargetPosition(armLevel[2]);
             while (arm.isBusy()) {}
 
-            moveForward(32, medium); //if not near the hub
+            moveForward(31, medium); //if not near the hub
 
-            /*intakePosition(5, fast);
+            intakePosition(5, fast);
             while (intake.isBusy()) {}
 
             moveForward(-11, fast);
 
-            turnClockwise(-40, medium); //this should perform a 45 degree turn
+            turnClockwise(-43, medium); //this should perform a 45 degree turn
 
             arm.setTargetPosition(armLevel[1]);
             while (arm.isBusy()) {}
 
-            moveForward(75, fast); // moving into warehouse park
+            moveForward(85, fast); // moving into warehouse park
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
-*/
+
 
         }
 
