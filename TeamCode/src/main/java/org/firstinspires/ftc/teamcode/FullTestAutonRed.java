@@ -65,9 +65,9 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
 
 
-    @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="FullV2AutonRed", group="Linear Opmode")  // @TeleOp(...) is the other common choice
+    @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="FullTestAutonRed", group="Linear Opmode")  // @TeleOp(...) is the other common choice
 // @Disabled
-    public class FullV2AutonRed extends LinearOpMode {
+    public class FullTestAutonRed extends LinearOpMode {
 
         // Declare Devices
         DcMotor frontleft = null;
@@ -92,7 +92,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 438};
+        int[] armLevel = {0, 145, 445};
         //private double 45 = 90 * 9.45 - 570.6
 
         @Override

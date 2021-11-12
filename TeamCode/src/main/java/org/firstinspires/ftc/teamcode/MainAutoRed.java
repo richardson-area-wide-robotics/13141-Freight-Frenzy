@@ -88,11 +88,11 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double medium = 0.5; // medium speed
         private double slow = 0.15; // slow speed
         private double clicksPerInch = 44.56; // empirically measured 4x encoding
-        private double clicksPerDeg = 9.45 ; // empirically measured 4x encoding
+        private double clicksPerDeg = 9.85 ; // empirically measured 4x encoding
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 436};
+        int[] armLevel = {0, 145, 445};
 
         @Override
         public void runOpMode() {
@@ -150,17 +150,19 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             arm.setTargetPosition(armLevel[2]);
             while (arm.isBusy()) {}
             
-            moveForward(19, fast);
+            moveForward(21, fast);
             
             intakePosition(5, fast);
             while (intake.isBusy()) {}
+
+            moveForward(-5,fast);
 
             turnClockwise(90, medium);
 
             arm.setTargetPosition(armLevel[1]);
             while (arm.isBusy()) {}
 
-            moveForward(70, fast);
+            moveForward(75 , fast);
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}

@@ -67,7 +67,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
     @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="SPAutoBlue", group="Linear Opmode")  // @TeleOp(...) is the other common choice
 // @Disabled
-    public class SPAutoBlue extends LinearOpMode {
+    public class  SPAutoBlue extends LinearOpMode {
 
         // Declare Devices
         DcMotor frontleft = null;

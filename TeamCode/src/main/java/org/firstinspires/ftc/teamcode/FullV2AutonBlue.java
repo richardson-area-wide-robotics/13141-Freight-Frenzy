@@ -88,11 +88,11 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double medium = 0.5; // medium speed
         private double slow = 0.30; // slow speed
         private double clicksPerInch = 44.56; // empirically measured 4x encoding
-        private double clicksPerDeg = 9.65 ; // empirically measured 4x encoding
+        private double clicksPerDeg = 9.65; // empirically measured 4x encoding
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 440};
+        int[] armLevel = {0, 145, 445};
         //private double 45 = 90 * 9.45 - 570.6
 
         @Override
@@ -169,7 +169,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             intakePosition(5, fast);
             while (intake.isBusy()) {}
 
-            moveForward(-10, fast);
+            moveForward(-11, fast);
 
             turnClockwise(-40, medium); //this should perform a 45 degree turn
 

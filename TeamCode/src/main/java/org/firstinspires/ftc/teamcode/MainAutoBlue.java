@@ -92,7 +92,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 436};
+        int[] armLevel = {0, 145, 445};
 
         @Override
         public void runOpMode() {
@@ -154,6 +154,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             
             intakePosition(5, fast);
             while (intake.isBusy()) {}
+
+            moveForward(-1,fast);
 
             turnClockwise(-90, medium);
 
