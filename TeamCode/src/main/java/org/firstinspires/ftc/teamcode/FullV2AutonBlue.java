@@ -88,7 +88,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double medium = 0.5; // medium speed
         private double slow = 0.30; // slow speed
         private double clicksPerInch = 44.56; // empirically measured 4x encoding
-        private double clicksPerDeg = 9.65; // empirically measured 4x encoding
+        private double clicksPerDeg = 9.02; // empirically measured 4x encoding
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
@@ -153,7 +153,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
             turnClockwise(-90, medium);
 
-            moveForward(-18, slow); //this will make it go backward into the carousel
+            moveForward(-15, slow); //this will make it go backward into the carousel
 
             spinnerMov(21, fast);
 
@@ -166,7 +166,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
             moveForward(32, medium); //if not near the hub
 
-            intakePosition(5, fast);
+            /*intakePosition(5, fast);
             while (intake.isBusy()) {}
 
             moveForward(-11, fast);
@@ -180,7 +180,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
-
+*/
 
         }
 
