@@ -160,6 +160,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
             intakePosition(5, fast);
             while (intake.isBusy()) {}
+            
+            moveForward(-5, fast);
 
             turnClockwise(137, medium);
 
