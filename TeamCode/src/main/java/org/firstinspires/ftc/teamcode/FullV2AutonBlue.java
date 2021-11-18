@@ -92,7 +92,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 465};
+        int[] armLevel = {0, 145, 470};
         //private double 45 = 90 * 9.45 - 570.6
 
         @Override
