@@ -149,35 +149,15 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             //All moveforwards with number 5 need to be calculated still
-            moveForward(6, medium); // set up position to turn and back up into delivery mechanism
+            moveForward(6, medium); // set up position to turn for warehouse park
 
-            turnClockwise(-90, medium);
-
-            moveForward(-15, slow); //this will make it go backward into the carousel
-
-            spinnerMov(21, fast);
-
-            moveForward(3, fast); //Will make it move forward into direction of Hub
-
-            turnClockwise(46, medium); //this should perform a 45 degree turn
-
-            arm.setTargetPosition(armLevel[2]);
-            while (arm.isBusy()) {}
-
-            moveForward(31, medium); //if not near the hub
-
-            intakePosition(5, fast);
-            while (intake.isBusy()) {}
-
-            moveForward(-11, fast);
-
-            turnClockwise(-43, medium); //this should perform a 45 degree turn
-
+            turnClockwise(90, medium);
+            
             arm.setTargetPosition(armLevel[1]);
             while (arm.isBusy()) {}
-
-            moveForward(85, fast); // moving into warehouse park
-
+            
+            moveForward(20, slow); //this will make it go forward into warehouse park
+        
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
 
