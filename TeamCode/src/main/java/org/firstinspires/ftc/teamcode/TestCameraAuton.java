@@ -83,7 +83,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
       "Marker"
     };
           private static final String VUFORIA_KEY =
-              //Key will go here 
+              "AYEYxIH/////AAABmVWDEqQv0EXyrybvY1Ci+xEFBepsYnECz7Ua39I5xNbwYAXBQw5iyriVO0+hLn1DGrU81PFuyFVy1/LhN4u/aAp24fKqHIn/oVTbtjWKoDw1IC/IDiCpYDLngQf0YwPRxcx1mfzjwxPFmE2phkDaPL+ebXJWJt1SiXWwNM9rEyd31/xvdfBFWuediDiGpN4+S9zjLUKhnoC5gXZ3zy1jXkiYKRcalP9avwId0Qz2B86nOaiHRWMEnaSn6Gnd6kw4LLwrn9IgdPDLFMPYfTmKOQozr0aX9+Yn+Jj+8JMjKTyvaSo+RYvgtnEzYqqnMKZdVneAt9M0zRErHRT3EbJXzm2/xqH58DZ+vD75+jmNmFBa";
         private VuforiaLocalizer vuforia;
         private TFObjectDetector tfod;
 
@@ -171,6 +171,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
             // Wait for the game to start (driver presses PLAY)
             waitForStart();
+                /*
  // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             //All moveforwards with number 5 need to be calculated still
@@ -419,6 +420,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
         }
 
         }
+        */
 /*
                     THIS IS THE CODE FOR SETTING UP Camera--------
                     CAMERA CODE IS BELOW-------
