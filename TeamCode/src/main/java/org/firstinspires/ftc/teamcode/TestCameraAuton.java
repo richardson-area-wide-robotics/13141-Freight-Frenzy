@@ -35,6 +35,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -68,8 +73,22 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
     @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="FullV2AutonBlue", group="Linear Opmode")  // @TeleOp(...) is the other common choice
 // @Disabled
     public class FullV2AutonBlue extends LinearOpMode {
+        
+        //setting up cam
+         private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String[] LABELS = {
+      "Ball",
+      "Cube",
+      "Duck",
+      "Marker"
+    };
+          private static final String VUFORIA_KEY =
+              //Key will go here 
+        private VuforiaLocalizer vuforia;
+        private TFObjectDetector tfod;
 
         // Declare Devices
+        WebcamName webcamName;
         DcMotor frontleft = null;
         DcMotor frontright = null;
         DcMotor backleft = null;
@@ -99,6 +118,12 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         public void runOpMode() {
             telemetry.setAutoClear(true);
 
+            //For the camera 
+            initVuforia();
+            initTfod();
+            if (tfod != null) {
+            tfod.activate();
+            tfod.setZoom(2.5, 16.0/9.0);
 
             // Initialize the hardware variables.
             backleft  = hardwareMap.get(DcMotor.class, "BackLeft");
@@ -108,6 +133,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             arm = hardwareMap.get(DcMotor.class, "Arm");
             intake = hardwareMap.get(DcMotor.class, "Intake");
             spinner = hardwareMap.get(DcMotor.class, "Spinner");
+         
 
 
             // The right motors need reversing
@@ -145,45 +171,14 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
             // Wait for the game to start (driver presses PLAY)
             waitForStart();
-
-            // *****************Dead reckoning list*************
+ // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             //All moveforwards with number 5 need to be calculated still
-            moveForward(6, medium); // set up position to turn and back up into delivery mechanism
-
-            turnClockwise(-90, medium);
-
-            moveForward(-15, slow); //this will make it go backward into the carousel
-
-            spinnerMov(21, fast);
-
-            moveForward(3, fast); //Will make it move forward into direction of Hub
-
-            turnClockwise(46, medium); //this should perform a 45 degree turn
-
-            arm.setTargetPosition(armLevel[2]);
-            while (arm.isBusy()) {}
-
-            moveForward(31, medium); //if not near the hub
-
-            intakePosition(5, fast);
-            while (intake.isBusy()) {}
-
-            moveForward(-11, fast);
-
-            turnClockwise(-43, medium); //this should perform a 45 degree turn
-
-            arm.setTargetPosition(armLevel[1]);
-            while (arm.isBusy()) {}
-
-            moveForward(85, fast); // moving into warehouse park
-
-            arm.setTargetPosition(armLevel[0]);
-            while (arm.isBusy()) {}
+            moveForward(6, medium); // where robot will move for camera to scan objects 
+            
 
 
-        }
-
+}
         private void moveForward(int howMuch, double speed) {
             // howMuch is in inches. A negative howMuch moves backward.
             frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -424,4 +419,63 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         }
 
         }
+/*
+                    THIS IS THE CODE FOR SETTING UP Camera--------
+                    CAMERA CODE IS BELOW-------
+                    
+                    
+*/
+            if (opModeIsActive()) {
+            while (opModeIsActive()) {
+                if (tfod != null) {
+                    // getUpdatedRecognitions() will return null if no new information is available since
+                    // the last time that call was made.
+                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                    if (updatedRecognitions != null) {
+                      telemetry.addData("# Object Detected", updatedRecognitions.size());
+                      // step through the list of recognitions and display boundary info.
+                      int i = 0;
+                      for (Recognition recognition : updatedRecognitions) {
+                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                recognition.getLeft(), recognition.getTop());
+                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                recognition.getRight(), recognition.getBottom());
+                        i++;
+                      }
+                      telemetry.update();
+                    }
+                }
+            }
+        }
+    }
+  private void initVuforia() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+    }
+
+    /**
+     * Initialize the TensorFlow Object Detection engine.
+     */
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+            "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+       tfodParameters.minResultConfidence = 0.8f;
+       tfodParameters.isModelTensorFlow2 = true;
+       tfodParameters.inputSize = 320;
+       tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+       tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+    }
+}
 
