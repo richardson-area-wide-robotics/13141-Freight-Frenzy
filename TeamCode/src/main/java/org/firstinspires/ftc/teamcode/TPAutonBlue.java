@@ -88,7 +88,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double medium = 0.5; // medium speed
         private double slow = 0.30; // slow speed
         private double clicksPerInch = 44.56; // empirically measured 4x encoding
-        private double clicksPerDeg = 9.02; // empirically measured 4x encoding
+        private double clicksPerDeg = 6.22; // empirically measured 4x encoding
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
@@ -149,34 +149,23 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             //All moveforwards with number 5 need to be calculated still
-            moveForward(6, medium); // set up position to turn and back up into delivery mechanism
-
-            turnClockwise(-90, medium);
-
-            moveForward(-15, slow); //this will make it go backward into the carousel
-
-            spinnerMov(21, fast);
-
-            moveForward(3, fast); //Will make it move forward into direction of Hub
-
-            turnClockwise(46, medium); //this should perform a 45 degree turn
-
+            moveForward(6, medium); // set up position to turn towards hub
+            
             arm.setTargetPosition(armLevel[2]);
             while (arm.isBusy()) {}
+            
+            turnClockwise(-45, medium);
 
-            moveForward(31, medium); //if not near the hub
-
+            moveForward(15, fast); //this will make it go towards the hub
+            
             intakePosition(5, fast);
             while (intake.isBusy()) {}
+            
+            moveForward(-5,fast); //this should make the robot back up in straight line with freight parking 
+            
+            turnClockwise(-45, medium); //this should perform a 45 degree turn
 
-            moveForward(-11, fast);
-
-            turnClockwise(-43, medium); //this should perform a 45 degree turn
-
-            arm.setTargetPosition(armLevel[1]);
-            while (arm.isBusy()) {}
-
-            moveForward(85, fast); // moving into warehouse park
+            moveForward(-10, medium); //for the robot to back up into freight parking
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
