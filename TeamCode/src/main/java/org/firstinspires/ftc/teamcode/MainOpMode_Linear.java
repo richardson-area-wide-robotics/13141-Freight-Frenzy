@@ -105,6 +105,7 @@ public class MainOpMode_Linear extends LinearOpMode {
         boolean pressedLeftTriggerIteration = true;
         boolean pressedLeftDpadIteration = true;
         boolean pressedRightDpadIteration = false;
+        boolean ArmManualMode = false;
         double intakePower = 0.0;
         double spinnerPower = 0.0;
         double armPower = 1.0;
@@ -171,6 +172,41 @@ public class MainOpMode_Linear extends LinearOpMode {
             }
             else
             */   // armManualPosition = arm.getCurrentPosition();
+            
+            //Start of a test arm manual mode//
+            /*
+            boolean ManualModeOn = gamepad1.guide;
+            if (ManualModeOn && !ArmManualMode) {
+            boolean leftTriggerPressed = gamepad1.left_trigger > 0.01;
+            if (leftTriggerPressed && !pressedLeftTriggerIteration) {
+                if (ArmManual == 1.0)
+                {
+                    ArmManual = 0.0;
+                }
+                else
+                {
+                    ArmManual = 1.0;
+                }
+            }
+            pressedLeftTriggerIteration = leftTriggerPressed;
+            
+            boolean rightTriggerPressed = gamepad1.right_trigger > 0.01;
+            
+            if (rightTriggerPressed && !pressedRightTriggerIteration) {
+                if (ArmManual == -1.0)
+                    {
+                    ArmManual = 0.0;
+                }
+                else
+                {
+                    ArmManual = -1.0;
+                }
+            }
+            pressedRightTriggerIteration = rightTriggerPressed;
+            
+            arm.setPower(ArmManual);
+   }
+            */
 
            
             //arm automation set up goes here 
