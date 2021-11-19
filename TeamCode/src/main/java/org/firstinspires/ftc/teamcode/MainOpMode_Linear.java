@@ -118,7 +118,26 @@ public class MainOpMode_Linear extends LinearOpMode {
 
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight
-            double y = -gamepad1.left_stick_y;
+             double y = gamepad1.left_stick_y * 1; // Remember, this is reversed!
+            double rx = -gamepad1.right_stick_x;
+            double x = 0;
+            if (gamepad1.left_trigger > 0 && gamepad1.right_trigger < .1 ) {
+                x =  gamepad1.left_trigger * .5; // Counteract imperfect strafing
+            }
+            else if (gamepad1.left_trigger < .1 && gamepad1.right_trigger > 0) {
+                x = gamepad1.right_trigger * -.5; // Counteract imperfect strafing;+
+            }
+            
+            
+            
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x*1.11 + rx) / denominator;
+            double frontRightPower = (y - x - rx)  / denominator;
+            double backRightPower = (y + x - rx) / denominator;
+            
+                      //This is the main mecanum drive (or the original)
+            /*double y = -gamepad1.left_stick_y;
             double x  =  gamepad1.left_stick_x * 1.1;
             double rx = gamepad1.right_stick_x;
 
@@ -129,13 +148,7 @@ public class MainOpMode_Linear extends LinearOpMode {
             double backrightpower = (y + x - rx) / denominator;
 
             
-            //This is test code to see if I can switch the stick inputs
-            /*double frontleftpower = (y + x - rx) / denominator;
-            double backleftpower = (y + x + rx) / denominator;
-            double frontrightpower = (y - x + rx) / denominator;
-            double backrightpower = (y - x - rx) / denominator;
             */
-
 
             
         
