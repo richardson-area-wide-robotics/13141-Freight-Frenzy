@@ -90,6 +90,7 @@ public class TestCameraAuton extends LinearOpMode {
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
 
+    tfod.activate();
     // Declare Devices
     WebcamName webcamName;
     DcMotor frontleft = null;
