@@ -121,13 +121,14 @@ public class MainOpMode_Linear extends LinearOpMode {
              double y = gamepad1.left_stick_y * 1; // Remember, this is reversed!
             double rx = -gamepad1.right_stick_x;
             double x = 0;
+            /*
             if (gamepad1.left_trigger > 0 && gamepad1.right_trigger < .1 ) {
                 x =  gamepad1.left_trigger * .5; // Counteract imperfect strafing
             }
             else if (gamepad1.left_trigger < .1 && gamepad1.right_trigger > 0) {
                 x = gamepad1.right_trigger * -.5; // Counteract imperfect strafing;+
             }
-            
+            */
             
             
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
