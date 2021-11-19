@@ -29,12 +29,15 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import java.util.List;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -45,95 +48,96 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * This file illustrates the concept of driving a path based on encoder counts.
  * It uses the common Pushbot hardware class to define the drive on the robot.
  * The code is structured as a LinearOpMode
- *
+ * <p>
  * The code REQUIRES that you DO have encoders on the wheels,
- *   otherwise you would use: PushbotAutoDriveByTime;
- *
- *  This code ALSO requires that the drive Motors have been configured such that a positive
- *  power command moves them forwards, and causes the encoders to count UP.
- *
- *   The desired path in this example is:
- *   - Drive forward for 48 inches
- *   - Spin right for 12 Inches
- *   - Drive Backwards for 24 inches
- *   - Stop and close the claw.
- *
- *  The code is written using a method called: encoderDrive(speed, leftInches, rightInches, timeoutS)
- *  that performs the actual movement.
- *  This methods assumes that each movement is relative to the last stopping place.
- *  There are other ways to perform encoder based moves, but this method is probably the simplest.
- *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
- *
+ * otherwise you would use: PushbotAutoDriveByTime;
+ * <p>
+ * This code ALSO requires that the drive Motors have been configured such that a positive
+ * power command moves them forwards, and causes the encoders to count UP.
+ * <p>
+ * The desired path in this example is:
+ * - Drive forward for 48 inches
+ * - Spin right for 12 Inches
+ * - Drive Backwards for 24 inches
+ * - Stop and close the claw.
+ * <p>
+ * The code is written using a method called: encoderDrive(speed, leftInches, rightInches, timeoutS)
+ * that performs the actual movement.
+ * This methods assumes that each movement is relative to the last stopping place.
+ * There are other ways to perform encoder based moves, but this method is probably the simplest.
+ * This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
+ * <p>
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
 
-
-    @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="FullV2AutonBlue", group="Linear Opmode")  // @TeleOp(...) is the other common choice
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "TestCameraAuton", group = "Linear Opmode")
+// @TeleOp(...) is the other common choice
 // @Disabled
-    public class FullV2AutonBlue extends LinearOpMode {
-        
-        //setting up cam
-         private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+public class TestCameraAuton extends LinearOpMode {
+
+    //setting up cam
+    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
     private static final String[] LABELS = {
-      "Ball",
-      "Cube",
-      "Duck",
-      "Marker"
+            "Ball",
+            "Cube",
+            "Duck",
+            "Marker"
     };
-          private static final String VUFORIA_KEY =
-              "AYEYxIH/////AAABmVWDEqQv0EXyrybvY1Ci+xEFBepsYnECz7Ua39I5xNbwYAXBQw5iyriVO0+hLn1DGrU81PFuyFVy1/LhN4u/aAp24fKqHIn/oVTbtjWKoDw1IC/IDiCpYDLngQf0YwPRxcx1mfzjwxPFmE2phkDaPL+ebXJWJt1SiXWwNM9rEyd31/xvdfBFWuediDiGpN4+S9zjLUKhnoC5gXZ3zy1jXkiYKRcalP9avwId0Qz2B86nOaiHRWMEnaSn6Gnd6kw4LLwrn9IgdPDLFMPYfTmKOQozr0aX9+Yn+Jj+8JMjKTyvaSo+RYvgtnEzYqqnMKZdVneAt9M0zRErHRT3EbJXzm2/xqH58DZ+vD75+jmNmFBa";
-        private VuforiaLocalizer vuforia;
-        private TFObjectDetector tfod;
+    private static final String VUFORIA_KEY =
+            "AYEYxIH/////AAABmVWDEqQv0EXyrybvY1Ci+xEFBepsYnECz7Ua39I5xNbwYAXBQw5iyriVO0+hLn1DGrU81PFuyFVy1/LhN4u/aAp24fKqHIn/oVTbtjWKoDw1IC/IDiCpYDLngQf0YwPRxcx1mfzjwxPFmE2phkDaPL+ebXJWJt1SiXWwNM9rEyd31/xvdfBFWuediDiGpN4+S9zjLUKhnoC5gXZ3zy1jXkiYKRcalP9avwId0Qz2B86nOaiHRWMEnaSn6Gnd6kw4LLwrn9IgdPDLFMPYfTmKOQozr0aX9+Yn+Jj+8JMjKTyvaSo+RYvgtnEzYqqnMKZdVneAt9M0zRErHRT3EbJXzm2/xqH58DZ+vD75+jmNmFBa";
+    private VuforiaLocalizer vuforia;
+    private TFObjectDetector tfod;
 
-        // Declare Devices
-        WebcamName webcamName;
-        DcMotor frontleft = null;
-        DcMotor frontright = null;
-        DcMotor backleft = null;
-        DcMotor backright = null;
-        DcMotor arm = null;
-        DcMotor intake = null;
-        DcMotor spinner = null;
-     
+    // Declare Devices
+    WebcamName webcamName;
+    DcMotor frontleft = null;
+    DcMotor frontright = null;
+    DcMotor backleft = null;
+    DcMotor backright = null;
+    DcMotor arm = null;
+    DcMotor intake = null;
+    DcMotor spinner = null;
 
 
-        // drive motor position variables
-        private int lfPos; private int rfPos; private int lrPos; private int rrPos;
+    // drive motor position variables
+    private int lfPos;
+    private int rfPos;
+    private int lrPos;
+    private int rrPos;
 
-        // operational constants
-        private double fast = .75; // Limit motor power to this value for Andymark RUN_USING_ENCODER mode
-        private double medium = 0.5; // medium speed
-        private double slow = 0.30; // slow speed
-        private double clicksPerInch = 44.56; // empirically measured 4x encoding
-        private double clicksPerDeg = 9.02; // empirically measured 4x encoding
-        private double tol = .1 * clicksPerInch;
-        private double armPower = 1.0;
-        int armPosition = 0;
-        int[] armLevel = {0, 145, 465};
-        //private double 45 = 90 * 9.45 - 570.6
+    // operational constants
+    private double fast = .75; // Limit motor power to this value for Andymark RUN_USING_ENCODER mode
+    private double medium = 0.5; // medium speed
+    private double slow = 0.30; // slow speed
+    private double clicksPerInch = 44.56; // empirically measured 4x encoding
+    private double clicksPerDeg = 9.02; // empirically measured 4x encoding
+    private double tol = .1 * clicksPerInch;
+    private double armPower = 1.0;
+    int armPosition = 0;
+    int[] armLevel = {0, 145, 465};
+    //private double 45 = 90 * 9.45 - 570.6
 
-        @Override
-        public void runOpMode() {
-            telemetry.setAutoClear(true);
+    @Override
+    public void runOpMode() {
+        telemetry.setAutoClear(true);
 
-            //For the camera 
-            initVuforia();
-            initTfod();
-            if (tfod != null) {
+        //For the camera
+       initVuforia();
+       initTfod();
+        if (tfod != null) {
             tfod.activate();
-            tfod.setZoom(2.5, 16.0/9.0);
+            tfod.setZoom(2.5, 16.0 / 9.0);
 
             // Initialize the hardware variables.
-            backleft  = hardwareMap.get(DcMotor.class, "BackLeft");
+            backleft = hardwareMap.get(DcMotor.class, "BackLeft");
             backright = hardwareMap.get(DcMotor.class, "BackRight");
             frontleft = hardwareMap.get(DcMotor.class, "FrontLeft");
             frontright = hardwareMap.get(DcMotor.class, "FrontRight");
             arm = hardwareMap.get(DcMotor.class, "Arm");
             intake = hardwareMap.get(DcMotor.class, "Intake");
             spinner = hardwareMap.get(DcMotor.class, "Spinner");
-         
 
 
             // The right motors need reversing
@@ -428,30 +432,33 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
                     
 */
             if (opModeIsActive()) {
-            while (opModeIsActive()) {
-                if (tfod != null) {
-                    // getUpdatedRecognitions() will return null if no new information is available since
-                    // the last time that call was made.
-                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-                      telemetry.addData("# Object Detected", updatedRecognitions.size());
-                      // step through the list of recognitions and display boundary info.
-                      int i = 0;
-                      for (Recognition recognition : updatedRecognitions) {
-                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                recognition.getLeft(), recognition.getTop());
-                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                recognition.getRight(), recognition.getBottom());
-                        i++;
-                      }
-                      telemetry.update();
+                while (opModeIsActive()) {
+                    if (tfod != null) {
+                        // getUpdatedRecognitions() will return null if no new information is available since
+                        // the last time that call was made.
+                        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                        if (updatedRecognitions != null) {
+                            telemetry.addData("# Object Detected", updatedRecognitions.size());
+                            // step through the list of recognitions and display boundary info.
+                            int i = 0;
+                            for (Recognition recognition : updatedRecognitions) {
+                                telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                                telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                        recognition.getLeft(), recognition.getTop());
+                                telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                        recognition.getRight(), recognition.getBottom());
+                                i++;
+                            }
+                            telemetry.update();
+                        }
                     }
                 }
             }
         }
     }
-  private void initVuforia() {
+
+    private void initVuforia() {
+
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */
@@ -471,13 +478,13 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
      */
     private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-            "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-       tfodParameters.minResultConfidence = 0.8f;
-       tfodParameters.isModelTensorFlow2 = true;
-       tfodParameters.inputSize = 320;
-       tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-       tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+        tfodParameters.minResultConfidence = 0.8f;
+        tfodParameters.isModelTensorFlow2 = true;
+        tfodParameters.inputSize = 320;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
     }
 }
 

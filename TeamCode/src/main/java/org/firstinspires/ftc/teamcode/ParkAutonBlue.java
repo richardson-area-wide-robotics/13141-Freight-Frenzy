@@ -65,9 +65,9 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
 
 
-    @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="FullV2AutonBlue", group="Linear Opmode")  // @TeleOp(...) is the other common choice
+    @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="ParkAutonBlue", group="Linear Opmode")  // @TeleOp(...) is the other common choice
 // @Disabled
-    public class FullV2AutonBlue extends LinearOpMode {
+    public class ParkAutonBlue extends LinearOpMode {
 
         // Declare Devices
         DcMotor frontleft = null;
