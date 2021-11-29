@@ -150,12 +150,12 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             arm.setTargetPosition(armLevel[2]);
             while (arm.isBusy()) {}
             
-            moveForward(19, fast);
+            moveForward(21, fast);
             
             intakePosition(5, fast);
             while (intake.isBusy()) {}
 
-            moveForward(-1,fast);
+            moveForward(-3,fast);
 
             turnClockwise(-90, medium);
 

@@ -34,7 +34,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -44,23 +46,23 @@ import com.qualcomm.robotcore.util.Range;
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
  * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
  * class is instantiated on the Robot Controller and executed.
- *
+ * <p>
  * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
  * It includes all the skeletal structure that all linear OpModes contain.
- *
+ * <p>
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="MainTeleop", group="Robot code")
+@TeleOp(name = "MainTeleop", group = "Robot code")
 public class MainOpMode_Linear extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor backleft = null;
-    private DcMotor backright = null;
-    private DcMotor frontright = null;
-    private DcMotor frontleft = null;
+    private DcMotorEx backleft = null;
+    private DcMotorEx backright = null;
+    private DcMotorEx frontright = null;
+    private DcMotorEx frontleft = null;
     private DcMotor spinner = null;
     private DcMotor arm = null;
     private DcMotor intake = null;
@@ -74,11 +76,11 @@ public class MainOpMode_Linear extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        
-        backleft  = hardwareMap.get(DcMotor.class, "BackLeft");
-        backright = hardwareMap.get(DcMotor.class, "BackRight");
-        frontleft = hardwareMap.get(DcMotor.class, "FrontLeft");
-        frontright = hardwareMap.get(DcMotor.class, "FrontRight");
+
+        backleft = hardwareMap.get(DcMotorEx.class, "BackLeft");
+        backright = hardwareMap.get(DcMotorEx.class, "BackRight");
+        frontleft = hardwareMap.get(DcMotorEx.class, "FrontLeft");
+        frontright = hardwareMap.get(DcMotorEx.class, "FrontRight");
         arm = hardwareMap.get(DcMotor.class, "Arm");
         intake = hardwareMap.get(DcMotor.class, "Intake");
         spinner = hardwareMap.get(DcMotor.class, "Spinner");
@@ -87,7 +89,13 @@ public class MainOpMode_Linear extends LinearOpMode {
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         arm.setPower(1.0);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-      //magnet = hardwareMap.get(TouchSensor.class, "Magnet");
+        //frontright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //frontleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //backright.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //backleft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        //magnet = hardwareMap.get(TouchSensor.class, "Magnet");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -95,67 +103,58 @@ public class MainOpMode_Linear extends LinearOpMode {
         frontright.setDirection(DcMotor.Direction.REVERSE);
         frontleft.setDirection(DcMotor.Direction.FORWARD);
         backleft.setDirection(DcMotor.Direction.FORWARD);
-    
+
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-        
+
         boolean pressedRightTriggerIteration = false;
         boolean pressedLeftTriggerIteration = true;
         boolean pressedLeftDpadIteration = true;
         boolean pressedRightDpadIteration = false;
-        boolean ArmManualMode = false;
+        boolean ArmManualMode = true;
         double intakePower = 0.0;
         double spinnerPower = 0.0;
         double armPower = 1.0;
+        double ArmManual = 0.0;
         int armPosition = 0;
+        int armManualPosition = 0;
         int[] armLevel = {0, 145, 309, 445};
+        //double motorVelocity = 125*1120/60;
+
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            
+
             // Setup a variable for each drive wheel to save power level for telemetry
 
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight
-             double y = gamepad1.left_stick_y * 1; // Remember, this is reversed!
-            double rx = -gamepad1.right_stick_x;
-            double x = 0;
-            /*
-            if (gamepad1.left_trigger > 0 && gamepad1.right_trigger < .1 ) {
-                x =  gamepad1.left_trigger * .5; // Counteract imperfect strafing
-            }
-            else if (gamepad1.left_trigger < .1 && gamepad1.right_trigger > 0) {
-                x = gamepad1.right_trigger * -.5; // Counteract imperfect strafing;+
-            }
-            */
-            
-            
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x*1.11 + rx) / denominator;
-            double frontRightPower = (y - x - rx)  / denominator;
-            double backRightPower = (y + x - rx) / denominator;
-            
-                      //This is the main mecanum drive (or the original)
-            /*double y = -gamepad1.left_stick_y;
-            double x  =  gamepad1.left_stick_x * 1.1;
+
+
+            //This is the main mecanum drive (or the original)
+            double y = -gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x * 1.1;
             double rx = gamepad1.right_stick_x;
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontleftpower = (y + x + rx) / denominator;
-            double backleftpower = (y - x + rx) / denominator;
-            double frontrightpower = (y - x - rx) / denominator;
-            double backrightpower = (y + x - rx) / denominator;
+            double frontleftpower = (y - x + rx) / denominator;
+            double backleftpower = (y + x + rx) / denominator;
+            double frontrightpower = (y + x - rx) / denominator;
+            double backrightpower = (y - x - rx) / denominator;
 
-            
-            */
+/*
+            backleft.setVelocity(backleftpower);
+            backright.setVelocity(backrightpower);
+            frontright.setVelocity(frontrightpower);
+            frontleft.setVelocity(frontleftpower);
 
-            
-        
+ */
+
 
             // Send calculated power to wheels
+
             backleft.setPower(backleftpower);
             backright.setPower(backrightpower);
             frontright.setPower(frontrightpower);
@@ -172,59 +171,23 @@ public class MainOpMode_Linear extends LinearOpMode {
             }
             else
             */   // armManualPosition = arm.getCurrentPosition();
-            
-            //Start of a test arm manual mode//
-            /*
-            boolean ManualModeOn = gamepad1.guide;
-            if (ManualModeOn && !ArmManualMode) {
-            boolean leftTriggerPressed = gamepad1.left_trigger > 0.01;
-            if (leftTriggerPressed && !pressedLeftTriggerIteration) {
-                if (ArmManual == 1.0)
-                {
-                    ArmManual = 0.0;
-                }
-                else
-                {
-                    ArmManual = 1.0;
-                }
-            }
-            pressedLeftTriggerIteration = leftTriggerPressed;
-            
-            boolean rightTriggerPressed = gamepad1.right_trigger > 0.01;
-            
-            if (rightTriggerPressed && !pressedRightTriggerIteration) {
-                if (ArmManual == -1.0)
-                    {
-                    ArmManual = 0.0;
-                }
-                else
-                {
-                    ArmManual = -1.0;
-                }
-            }
-            pressedRightTriggerIteration = rightTriggerPressed;
-            
-            arm.setPower(ArmManual);
-   }
-            */
 
-           
-            //arm automation set up goes here 
-            if (gamepad1.x) {
-                armPosition = armLevel[0];
+            //Start of a test arm manual mode//
+
+
+            //arm automation set up goes here
+                if (gamepad1.x) {
+                    armPosition = armLevel[0];
+                } else if (gamepad1.a) {
+                    armPosition = armLevel[1];
+                } else if (gamepad1.b) {
+                    armPosition = armLevel[2];
+                } else if (gamepad1.y) {
+                    armPosition = armLevel[3];
+                }
+                arm.setTargetPosition(armPosition);
             }
-            else if (gamepad1.a) {
-                armPosition = armLevel[1];
-            }
-            else if (gamepad1.b) {
-                armPosition = armLevel[2];
-            }
-            else if (gamepad1.y) {
-                armPosition = armLevel[3];
-            }
-            arm.setTargetPosition(armPosition);
-           
-            
+
             
           
             /*
@@ -235,7 +198,7 @@ public class MainOpMode_Linear extends LinearOpMode {
             }
             */
 
-            // Intake --------------------------------------------------
+        // Intake --------------------------------------------------
             
            /* boolean leftTriggerPressed = gamepad1.left_trigger > 0.01;
             
@@ -271,62 +234,56 @@ public class MainOpMode_Linear extends LinearOpMode {
             
             intake.setPower(intakePower); */
 
-            
-             if (gamepad1.right_bumper)
-                intake.setPower(1.0);
-            else if (gamepad1.left_bumper)
-                 intake.setPower(-1.0);
 
-            else
-                intake.setPower(0.0);
-            //else if (gamepad1.right_trigger > 0.01)
-            
-            // Delivery mechanism
+        if (gamepad1.right_bumper)
+            intake.setPower(1.0);
+        else if (gamepad1.left_bumper)
+            intake.setPower(-1.0);
 
-            boolean leftDpadPressed = gamepad1.dpad_left;
+        else
+            intake.setPower(0.0);
+        //else if (gamepad1.right_trigger > 0.01)
 
-            if (leftDpadPressed && !pressedLeftDpadIteration) {
-                // set spinnerPower based on existing value of spinnerPower
-                // if spinnerPower = 1, spinnerPower = 0
-                // if spinnerPower = 0, spinnerePower = 1
-                if (spinnerPower == 1.0)
-                {
-                    spinnerPower = 0.0;
-                }
-                else
-                {
-                    spinnerPower = 1.0;
-                }
+        // Delivery mechanism
+
+        boolean leftDpadPressed = gamepad1.dpad_left;
+
+        if (leftDpadPressed && !pressedLeftDpadIteration) {
+            // set spinnerPower based on existing value of spinnerPower
+            // if spinnerPower = 1, spinnerPower = 0
+            // if spinnerPower = 0, spinnerePower = 1
+            if (spinnerPower == 1.0) {
+                spinnerPower = 0.0;
+            } else {
+                spinnerPower = 1.0;
             }
-            pressedLeftDpadIteration = leftDpadPressed;
-
-
-            boolean rightDpadPressed = gamepad1.dpad_right;
-
-            if (rightDpadPressed && !pressedRightDpadIteration) {
-                if (spinnerPower == -1.0)
-                {
-                    spinnerPower = 0.0;
-                }
-                else
-                {
-                    spinnerPower = -1.0;
-                }
-            }
-            pressedRightDpadIteration = rightDpadPressed;
-
-            spinner.setPower(spinnerPower);
-
-
-
-            // Show the elapsed game time and wheel power, also arm position.
-            telemetry.addData("Encoder value", arm.getCurrentPosition());
-            telemetry.addData("Motor position", String.valueOf(frontleft.getCurrentPosition()), frontright.getCurrentPosition(), backleft.getCurrentPosition(), backright.getCurrentPosition());
-            telemetry.addData("Arm Power", arm.getPower());
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "frontleft (%.2f), frontright (%.2f), backleft (%.2f), backright (%.2f)", frontleftpower, frontrightpower, backleftpower, backrightpower);
-            telemetry.addData("spinner", spinner.getPower());
-            telemetry.update();
         }
+        pressedLeftDpadIteration = leftDpadPressed;
+
+
+        boolean rightDpadPressed = gamepad1.dpad_right;
+
+        if (rightDpadPressed && !pressedRightDpadIteration) {
+            if (spinnerPower == -1.0) {
+                spinnerPower = 0.0;
+            } else {
+                spinnerPower = -1.0;
+            }
+        }
+        pressedRightDpadIteration = rightDpadPressed;
+
+        spinner.setPower(spinnerPower);
+
+
+        // Show the elapsed game time and wheel power, also arm position.
+        telemetry.addData("Encoder value", arm.getCurrentPosition());
+        telemetry.addData("Motor position", String.valueOf(frontleft.getCurrentPosition()), frontright.getCurrentPosition(), backleft.getCurrentPosition(), backright.getCurrentPosition());
+        telemetry.addData("Arm Power", arm.getPower());
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Motors", "frontleft (%.2f), frontright (%.2f), backleft (%.2f), backright (%.2f)", frontleft, frontright, backleft, backright);
+        telemetry.addData("spinner", spinner.getPower());
+        telemetry.update();
     }
 }
+
+
