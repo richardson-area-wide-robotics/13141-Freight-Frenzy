@@ -149,26 +149,28 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             //All moveforwards with number 5 need to be calculated still
-            moveForward(6, medium); // set up position to turn towards hub
+            moveForward(5, medium); // set up position to turn towards hub
             
             arm.setTargetPosition(armLevel[2]);
             while (arm.isBusy()) {}
             
-            turnClockwise(-45, medium);
+            turnClockwise(-57, medium);
 
-            moveForward(15, fast); //this will make it go towards the hub
+            moveForward(24, fast); //this will make it go towards the hub
             
             intakePosition(5, fast);
             while (intake.isBusy()) {}
             
-            moveForward(-5,fast); //this should make the robot back up in straight line with freight parking 
+            moveForward(-1,fast); //this should make the robot back up in straight line with freight parking
             
-            turnClockwise(-45, medium); //this should perform a 45 degree turn
+            turnClockwise( -85, medium); //this should perform a 45 degree turn
 
-            moveForward(-10, medium); //for the robot to back up into freight parking
+            moveForward(-34, medium); //for the robot to back up into freight parking
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
+
+            moveRight(-5, medium);
 
 
         }

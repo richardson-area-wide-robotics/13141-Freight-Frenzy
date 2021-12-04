@@ -149,14 +149,14 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             //All moveforwards with number 5 need to be calculated still
-            moveForward(6, medium); // set up position to turn for warehouse park
+            moveForward(19, fast); // set up position to turn for warehouse park
 
             turnClockwise(90, medium);
             
             arm.setTargetPosition(armLevel[1]);
             while (arm.isBusy()) {}
             
-            moveForward(20, slow); //this will make it go forward into warehouse park
+            moveForward(55, fast); //this will make it go forward into warehouse park
         
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}

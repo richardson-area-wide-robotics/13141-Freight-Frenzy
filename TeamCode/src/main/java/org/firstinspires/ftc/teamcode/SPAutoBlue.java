@@ -92,7 +92,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 436};
+        int[] armLevel = {0, 145, 450};
 
 
         @Override
@@ -152,23 +152,23 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             arm.setTargetPosition(armLevel[2]);
             while (arm.isBusy()) {}
 
-            moveForward(1, fast);
+            moveForward(3, fast);
 
-            turnClockwise(45, medium);
+            turnClockwise(46, medium);
 
-            moveForward(24, fast);
+            moveForward(25, fast);
 
             intakePosition(5, fast);
             while (intake.isBusy()) {}
             
-            moveForward(-5,fast);
+            moveForward(-3,fast);
 
-            turnClockwise(-137, medium);
+            turnClockwise(-180, medium); //work this to perform a 45 degree turn left
 
             arm.setTargetPosition(armLevel[1]);
             while (arm.isBusy()) {}
 
-            moveForward(30, fast);
+            moveForward(65, fast);
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
