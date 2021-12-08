@@ -78,18 +78,15 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 public class TestCameraAuton extends LinearOpMode {
 
     //setting up cam
-    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String TFOD_MODEL_ASSET = "Team_Element_V2.tflite";
     private static final String[] LABELS = {
-            "Ball",
-            "Cube",
-            "Duck",
-            "Marker"
+            "Team_Element"
     };
     private static final String VUFORIA_KEY =
             "AYEYxIH/////AAABmVWDEqQv0EXyrybvY1Ci+xEFBepsYnECz7Ua39I5xNbwYAXBQw5iyriVO0+hLn1DGrU81PFuyFVy1/LhN4u/aAp24fKqHIn/oVTbtjWKoDw1IC/IDiCpYDLngQf0YwPRxcx1mfzjwxPFmE2phkDaPL+ebXJWJt1SiXWwNM9rEyd31/xvdfBFWuediDiGpN4+S9zjLUKhnoC5gXZ3zy1jXkiYKRcalP9avwId0Qz2B86nOaiHRWMEnaSn6Gnd6kw4LLwrn9IgdPDLFMPYfTmKOQozr0aX9+Yn+Jj+8JMjKTyvaSo+RYvgtnEzYqqnMKZdVneAt9M0zRErHRT3EbJXzm2/xqH58DZ+vD75+jmNmFBa";
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
-    
+
     // Declare Devices
     WebcamName webcamName;
     DcMotor frontleft = null;
@@ -116,7 +113,7 @@ public class TestCameraAuton extends LinearOpMode {
     private double tol = .1 * clicksPerInch;
     private double armPower = 1.0;
     int armPosition = 0;
-    int[] armLevel = {0, 145, 465};
+    int[] armLevel = {0, 145, 309, 465};
     //private double 45 = 90 * 9.45 - 570.6
 
     @Override
@@ -124,12 +121,12 @@ public class TestCameraAuton extends LinearOpMode {
         telemetry.setAutoClear(true);
 
         //For the camera
-       initVuforia();
-       initTfod();
+        initVuforia();
+        initTfod();
 
         if (tfod != null) {
             tfod.activate();
-            tfod.setZoom(2.5, 16.0 / 9.0);
+            tfod.setZoom(1.0, 16.0 / 9.0);
 
             // Initialize the hardware variables.
             backleft = hardwareMap.get(DcMotor.class, "BackLeft");
@@ -176,10 +173,14 @@ public class TestCameraAuton extends LinearOpMode {
 
             // Wait for the game to start (driver presses PLAY)
             waitForStart();
-                /*
- // *****************Dead reckoning list*************
+
+            // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             //All moveforwards with number 5 need to be calculated still
+
+
+
+            /*
             moveForward(6, medium); // where robot will move for camera to scan objects 
             
 
@@ -449,8 +450,24 @@ public class TestCameraAuton extends LinearOpMode {
                                 telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                         recognition.getRight(), recognition.getBottom());
                                 i++;
+                               //Barcode Position 3 - arm level 3
+                                if (recognition.getLeft() > 300 && recognition.getTop() > 15) {
+                                   arm.setTargetPosition(armLevel[3]);
+                                   while (arm.isBusy()) {}
+                               }
+                                //Barcode Position 2 - arm level 2
+                               else if (recognition.getLeft() < 300 && recognition.getTop() < 5) {
+                                   arm.setTargetPosition(armLevel[1]);
+                                   while (arm.isBusy()) {}
+                               }
+                               //Barcode Position 1 - arm level 1
+                               else if (recognition.getLeft() < 110 && recognition.getTop() < 5){
+                                   arm.setTargetPosition(armLevel[2]);
+                                   while (arm.isBusy()) {}
+                               }
                             }
                             telemetry.update();
+
                         }
                     }
                 }
@@ -488,4 +505,6 @@ public class TestCameraAuton extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
     }
 }
+
+
 

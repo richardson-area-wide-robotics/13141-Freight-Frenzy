@@ -161,7 +161,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             intakePosition(5, fast);
             while (intake.isBusy()) {}
             
-            moveForward(-3, fast);
+            moveForward(-4, fast);
 
             turnClockwise(180, medium); //work this to do a 45 degree turn (last thing to complete auton)
 

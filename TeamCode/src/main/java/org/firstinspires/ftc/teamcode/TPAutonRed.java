@@ -154,9 +154,9 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             arm.setTargetPosition(armLevel[2]);
             while (arm.isBusy()) {}
             
-            turnClockwise(57, medium);
+            turnClockwise(60, medium);
 
-            moveForward(24, fast); //this will make it go forward into the hub
+            moveForward(23, fast); //this will make it go forward into the hub
 
             intakePosition(5, fast);
             while (intake.isBusy()) {}
@@ -170,7 +170,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
 
-            moveRight(5, medium);
+
 
 
         }

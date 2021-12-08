@@ -154,7 +154,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             arm.setTargetPosition(armLevel[1]);
             while (arm.isBusy()) {}
             
-            turnClockwise(-90, medium);
+            turnClockwise(-85, medium);
 
             moveForward(55,fast); //this will make it go backward into the carousel
             
