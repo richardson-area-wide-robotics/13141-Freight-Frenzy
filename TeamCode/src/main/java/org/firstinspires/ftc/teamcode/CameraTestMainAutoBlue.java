@@ -36,6 +36,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import java.util.List;
+
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
  * It uses the common Pushbot hardware class to define the drive on the robot.
@@ -65,42 +73,63 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
 
 
-    @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="MainAutoBlue", group="Linear Opmode")  // @TeleOp(...) is the other common choice
+    @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="CameraMainAutoBlue", group="Linear Opmode")  // @TeleOp(...) is the other common choice
 // @Disabled
-    public class MainAutoBlue extends LinearOpMode {
+    public class CameraTestMainAutoBlue extends LinearOpMode {
 
-        // Declare Devices
-        DcMotor frontleft = null;
-        DcMotor frontright = null;
-        DcMotor backleft = null;
-        DcMotor backright = null;
-        DcMotor arm = null;
-        DcMotor intake = null;
-        DcMotor spinner = null;
-     
+    //Camera SetUp
+    private static final String TFOD_MODEL_ASSET = "Team_Element_V2.tflite";
+    private static final String[] LABELS = {
+            "Team_Element"
+    };
+    private static final String VUFORIA_KEY =
+            "AYEYxIH/////AAABmVWDEqQv0EXyrybvY1Ci+xEFBepsYnECz7Ua39I5xNbwYAXBQw5iyriVO0+hLn1DGrU81PFuyFVy1/LhN4u/aAp24fKqHIn/oVTbtjWKoDw1IC/IDiCpYDLngQf0YwPRxcx1mfzjwxPFmE2phkDaPL+ebXJWJt1SiXWwNM9rEyd31/xvdfBFWuediDiGpN4+S9zjLUKhnoC5gXZ3zy1jXkiYKRcalP9avwId0Qz2B86nOaiHRWMEnaSn6Gnd6kw4LLwrn9IgdPDLFMPYfTmKOQozr0aX9+Yn+Jj+8JMjKTyvaSo+RYvgtnEzYqqnMKZdVneAt9M0zRErHRT3EbJXzm2/xqH58DZ+vD75+jmNmFBa";
+    private VuforiaLocalizer vuforia;
+    private TFObjectDetector tfod;
 
 
-        // drive motor position variables
-        private int lfPos; private int rfPos; private int lrPos; private int rrPos;
+    // Declare Devices
+    DcMotor frontleft = null;
+    DcMotor frontright = null;
+    DcMotor backleft = null;
+    DcMotor backright = null;
+    DcMotor arm = null;
+    DcMotor intake = null;
+    DcMotor spinner = null;
 
-        // operational constants
-        private double fast = .75; // Limit motor power to this value for Andymark RUN_USING_ENCODER mode
-        private double medium = 0.5; // medium speed
-        private double slow = 0.15; // slow speed
-        private double clicksPerInch = 44.56; // empirically measured 4x encoding
-        private double clicksPerDeg = 9.45 ; // empirically measured 4x encoding
-        private double tol = .1 * clicksPerInch;
-        private double armPower = 1.0;
-        int armPosition = 0;
-        int[] armLevel = {0, 145, 445};
 
-        @Override
-        public void runOpMode() {
-            telemetry.setAutoClear(true);
+    // drive motor position variables
+    private int lfPos;
+    private int rfPos;
+    private int lrPos;
+    private int rrPos;
+
+    // operational constants
+    private double fast = .75; // Limit motor power to this value for Andymark RUN_USING_ENCODER mode
+    private double medium = 0.5; // medium speed
+    private double slow = 0.15; // slow speed
+    private double clicksPerInch = 44.56; // empirically measured 4x encoding
+    private double clicksPerDeg = 9.45; // empirically measured 4x encoding
+    private double tol = .1 * clicksPerInch;
+    private double armPower = 1.0;
+    int armPosition = 0;
+    int[] armLevel = {0, 145, 309, 445};
+
+    @Override
+    public void runOpMode() {
+        telemetry.setAutoClear(true);
+
+        //For init Camera Variables
+        initVuforia();
+        initTfod();
+
+        if (tfod != null) {
+            tfod.activate();
+            tfod.setZoom(1.0, 16.0 / 9.0);
 
 
             // Initialize the hardware variables.
-            backleft  = hardwareMap.get(DcMotor.class, "BackLeft");
+            backleft = hardwareMap.get(DcMotor.class, "BackLeft");
             backright = hardwareMap.get(DcMotor.class, "BackRight");
             frontleft = hardwareMap.get(DcMotor.class, "FrontLeft");
             frontright = hardwareMap.get(DcMotor.class, "FrontRight");
@@ -145,29 +174,121 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
             // Wait for the game to start (driver presses PLAY)
             waitForStart();
 
-            // *****************Dead reckoning list*************
-            // Distances in inches, angles in deg, speed 0.0 to 0.6
-            arm.setTargetPosition(armLevel[2]);
-            while (arm.isBusy()) {}
-            
-            moveForward(21, fast);
-            
-            intakePosition(5, fast);
-            while (intake.isBusy()) {}
+            if (opModeIsActive()) {
+                while (opModeIsActive()) {
+                    if (tfod != null) {
+                        // getUpdatedRecognitions() will return null if no new information is available since
+                        // the last time that call was made.
+                        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                        if (updatedRecognitions != null) {
+                            telemetry.addData("# Object Detected", updatedRecognitions.size());
+                            // step through the list of recognitions and display boundary info.
+                            int i = 0;
+                            for (Recognition recognition : updatedRecognitions) {
+                                telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                                telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                        recognition.getLeft(), recognition.getTop());
+                                telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                        recognition.getRight(), recognition.getBottom());
+                                i++;
+                                //Barcode Position 3 - arm level 3
+                                if (recognition.getLeft() > 300 && recognition.getTop() > 15) {
+                                    arm.setTargetPosition(armLevel[3]);
+                                    while (arm.isBusy()) {
+                                    }
+                                }
+                                //Barcode Position 2 - arm level 2
+                                else if (recognition.getLeft() < 300 && recognition.getTop() < 5) {
+                                    arm.setTargetPosition(armLevel[1]);
+                                    while (arm.isBusy()) {
+                                    }
+                                }
+                                //Barcode Position 1 - arm level 1
+                                else if (recognition.getLeft() < 110 && recognition.getTop() < 5) {
+                                    arm.setTargetPosition(armLevel[2]);
+                                    while (arm.isBusy()) {
+                                    }
+                                }
 
-            moveForward(-3,fast);
-
-            turnClockwise(-90, medium);
-
-            arm.setTargetPosition(armLevel[1]);
-            while (arm.isBusy()) {}
-
-            moveForward(70, fast);
-
-            arm.setTargetPosition(armLevel[0]);
-            while (arm.isBusy()) {}
+                            }
+                            telemetry.update();
+                        }
+                        if (arm.getCurrentPosition() > 100){
+                            break;
+                        }
+                    }
+                }
+            }
 
         }
+
+
+
+        // *****************Dead reckoning list*************
+        // Distances in inches, angles in deg, speed 0.0 to 0.6
+
+        moveForward(21, fast); //Move towards the Hub
+
+        intakePosition(5, fast); //Outake in the huh
+        while (intake.isBusy()) {
+        }
+
+        moveForward(-3, fast); //back away from the hub
+
+        turnClockwise(-90, medium); //turn left for warehouse parking
+
+        arm.setTargetPosition(armLevel[1]); //set arm into level 1 for running over the field
+        while (arm.isBusy()) {
+        }
+
+        moveForward(70, fast); //Intitializing field parking
+
+        arm.setTargetPosition(armLevel[0]); //Set arm back to level "0" or starting position
+        while (arm.isBusy()) {
+        }
+    }
+
+
+
+
+
+        private void initVuforia () {
+
+            /*
+             * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+             */
+            VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+            parameters.vuforiaLicenseKey = VUFORIA_KEY;
+            parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+            //  Instantiate the Vuforia engine
+            vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+            // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+        }
+
+        /**
+         * Initialize the TensorFlow Object Detection engine.
+         */
+        private void initTfod () {
+            int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                    "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+            TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+            tfodParameters.minResultConfidence = 0.8f;
+            tfodParameters.isModelTensorFlow2 = true;
+            tfodParameters.inputSize = 320;
+            tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+            tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+        }
+
+
+
+
+    ///////////////////////////////////////////////////////////////////
+                           //All methods\\
+    ////////////////////////////////////////////////////////////////////
+
 
         private void moveForward(int howMuch, double speed) {
             // howMuch is in inches. A negative howMuch moves backward.
