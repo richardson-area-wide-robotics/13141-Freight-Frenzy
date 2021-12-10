@@ -73,12 +73,12 @@ import java.util.List;
 
 
 
-    @Autonomous(name="CameraTPAutonRed", group="Linear Opmode")  // @TeleOp(...) is the other common choice
-@Disabled
-    public class CameraTestTPAutonRed extends LinearOpMode {
+    @Autonomous(name="CameraSPAutoRed", group="Linear Opmode")  // @TeleOp(...) is the other common choice
+//@Disabled
+    public class CameraSPAutoRed extends LinearOpMode {
 
     //Camera SetUp
-    private static final String TFOD_MODEL_ASSET = "Team_Element_V2.tflite";
+    private static final String TFOD_MODEL_ASSET = "Team_Element_Red.tflite";
     private static final String[] LABELS = {
             "Team_Element"
     };
@@ -104,14 +104,14 @@ import java.util.List;
         // operational constants
         private double fast = .75; // Limit motor power to this value for Andymark RUN_USING_ENCODER mode
         private double medium = 0.5; // medium speed
-        private double slow = 0.30; // slow speed
+        private double slow = 0.15; // slow speed
         private double clicksPerInch = 44.56; // empirically measured 4x encoding
-        private double clicksPerDeg = 6.22; // empirically measured 4x encoding
+        private double clicksPerDeg = 6.22 ; // empirically measured 4x encoding
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 309, 465};
-        //private double 45 = 90 * 9.45 - 570.6
+        int[] armLevel = {0, 145, 309, 436};
+
 
         @Override
         public void runOpMode() {
@@ -125,52 +125,51 @@ import java.util.List;
                 tfod.activate();
                 tfod.setZoom(1.0, 16.0 / 9.0);
 
-
                 // Initialize the hardware variables.
-            backleft  = hardwareMap.get(DcMotor.class, "BackLeft");
-            backright = hardwareMap.get(DcMotor.class, "BackRight");
-            frontleft = hardwareMap.get(DcMotor.class, "FrontLeft");
-            frontright = hardwareMap.get(DcMotor.class, "FrontRight");
-            arm = hardwareMap.get(DcMotor.class, "Arm");
-            intake = hardwareMap.get(DcMotor.class, "Intake");
-            spinner = hardwareMap.get(DcMotor.class, "Spinner");
+                backleft = hardwareMap.get(DcMotor.class, "BackLeft");
+                backright = hardwareMap.get(DcMotor.class, "BackRight");
+                frontleft = hardwareMap.get(DcMotor.class, "FrontLeft");
+                frontright = hardwareMap.get(DcMotor.class, "FrontRight");
+                arm = hardwareMap.get(DcMotor.class, "Arm");
+                intake = hardwareMap.get(DcMotor.class, "Intake");
+                spinner = hardwareMap.get(DcMotor.class, "Spinner");
 
 
-            // The right motors need reversing
-            frontright.setDirection(DcMotor.Direction.REVERSE);
-            frontleft.setDirection(DcMotor.Direction.FORWARD);
-            backright.setDirection(DcMotor.Direction.REVERSE);
-            backleft.setDirection(DcMotor.Direction.FORWARD);
+                // The right motors need reversing
+                frontright.setDirection(DcMotor.Direction.REVERSE);
+                frontleft.setDirection(DcMotor.Direction.FORWARD);
+                backright.setDirection(DcMotor.Direction.REVERSE);
+                backleft.setDirection(DcMotor.Direction.FORWARD);
 
-            // Set the drive motor run modes:
-            frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            spinner.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                // Set the drive motor run modes:
+                frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                spinner.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            frontright.setTargetPosition(0);
-            frontleft.setTargetPosition(0);
-            backleft.setTargetPosition(0);
-            backright.setTargetPosition(0);
-            arm.setTargetPosition(0);
-            intake.setTargetPosition(0);
-            spinner.setTargetPosition(0);
+                frontright.setTargetPosition(0);
+                frontleft.setTargetPosition(0);
+                backleft.setTargetPosition(0);
+                backright.setTargetPosition(0);
+                arm.setTargetPosition(0);
+                intake.setTargetPosition(0);
+                spinner.setTargetPosition(0);
 
-            frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            spinner.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            arm.setPower(1.0);
-            arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                spinner.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                arm.setPower(1.0);
+                arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            // Wait for the game to start (driver presses PLAY)
-            waitForStart();
+                // Wait for the game to start (driver presses PLAY)
+                waitForStart();
                 if (opModeIsActive()) {
                     while (opModeIsActive()) {
                         if (tfod != null) {
@@ -196,20 +195,22 @@ import java.util.List;
                                     }
                                     //Barcode Position 2 - arm level 2
                                     else if (recognition.getLeft() < 300/*re-calculate*/ && recognition.getTop() < 5/*re-calculate*/) {
-                                        arm.setTargetPosition(armLevel[1]);
+                                        arm.setTargetPosition(armLevel[2]);
                                         while (arm.isBusy()) {
                                         }
                                     }
                                     //Barcode Position 1 - arm level 1
                                     else if (recognition.getLeft() < 110/*re-calculate*/ && recognition.getTop() < 5/*re-calculate*/) {
-                                        arm.setTargetPosition(armLevel[2]);
+                                        arm.setTargetPosition(armLevel[1]);
                                         while (arm.isBusy()) {
                                         }
-                                        continue;
                                     }
                                 }
                                 telemetry.update();
 
+                            }
+                            if (arm.getCurrentPosition() > 100) {
+                                break;
                             }
                         }
                     }
@@ -217,21 +218,24 @@ import java.util.List;
             }
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
-            //All moveforwards with number 5 need to be calculated still
-            moveForward(5, medium); // set up position to turn towards the hub
+            //All moveforwards are mostly calculated
+            moveForward(3, fast);
 
-            turnClockwise(60, medium);
+            turnClockwise(-46, medium);
 
-            moveForward(23, fast); //this will make it go forward into the hub
+            moveForward(25, fast);
 
             intakePosition(5, fast);
             while (intake.isBusy()) {}
+            
+            moveForward(-4, fast);
 
-            moveForward(-1, fast); // this should allign it with the freight parking
+            turnClockwise(180, medium); //work this to do a 45 degree turn (last thing to complete auton)
 
-            turnClockwise(85, medium);
+            arm.setTargetPosition(armLevel[1]);
+            while (arm.isBusy()) {}
 
-            moveForward(-34, medium); //move into the freight parking
+            moveForward(65, fast);
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
@@ -276,18 +280,7 @@ import java.util.List;
 
     private void moveForward(int howMuch, double speed) {
             // howMuch is in inches. A negative howMuch moves backward.
-            frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontright.setTargetPosition(0);
-            frontleft.setTargetPosition(0);
-            backleft.setTargetPosition(0);
-            backright.setTargetPosition(0);
-            frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             // fetch motor positions
             lfPos = frontleft.getCurrentPosition();
             rfPos = frontright.getCurrentPosition();
@@ -452,18 +445,7 @@ import java.util.List;
 
         private void turnClockwise(int whatAngle, double speed) {
             // whatAngle is in degrees. A negative whatAngle turns counterclockwise.
-            frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            backleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            backright.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontright.setTargetPosition(0);
-            frontleft.setTargetPosition(0);
-            backleft.setTargetPosition(0);
-            backright.setTargetPosition(0);
-            frontleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backleft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backright.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             // fetch motor positions
             lfPos = frontleft.getCurrentPosition();
             rfPos = frontright.getCurrentPosition();
@@ -489,7 +471,6 @@ import java.util.List;
             // wait for move to complete
             while (frontleft.isBusy() && frontright.isBusy() &&
                     backleft.isBusy() && backright.isBusy()) {
-                
 
                 // Display it for the driver.
                 telemetry.addLine("Turn Clockwise");
@@ -499,12 +480,6 @@ import java.util.List;
                         backright.getCurrentPosition());
                 telemetry.update();
             }
-            try {
-                    Thread.sleep(5);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            
 
             // Stop all motion;
             frontleft.setPower(0);

@@ -44,6 +44,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 
+
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
  * It uses the common Pushbot hardware class to define the drive on the robot.
@@ -73,12 +74,12 @@ import java.util.List;
 
 
 
-    @Autonomous(name="CameraFullV2AutonBlue", group="Linear Opmode")  // @TeleOp(...) is the other common choice
-@Disabled
-    public class CameraTestFullV2AutonBlue extends LinearOpMode {
+    @Autonomous(name="CameraFullAutonRed", group="Linear Opmode")  // @TeleOp(...) is the other common choice
+// @Disabled
+    public class CameraFullV2AutonRed extends LinearOpMode {
 
     //Camera SetUp
-    private static final String TFOD_MODEL_ASSET = "Team_Element_V2.tflite";
+    private static final String TFOD_MODEL_ASSET = "Team_Element_Red.tflite";
     private static final String[] LABELS = {
             "Team_Element"
     };
@@ -86,6 +87,7 @@ import java.util.List;
             "AYEYxIH/////AAABmVWDEqQv0EXyrybvY1Ci+xEFBepsYnECz7Ua39I5xNbwYAXBQw5iyriVO0+hLn1DGrU81PFuyFVy1/LhN4u/aAp24fKqHIn/oVTbtjWKoDw1IC/IDiCpYDLngQf0YwPRxcx1mfzjwxPFmE2phkDaPL+ebXJWJt1SiXWwNM9rEyd31/xvdfBFWuediDiGpN4+S9zjLUKhnoC5gXZ3zy1jXkiYKRcalP9avwId0Qz2B86nOaiHRWMEnaSn6Gnd6kw4LLwrn9IgdPDLFMPYfTmKOQozr0aX9+Yn+Jj+8JMjKTyvaSo+RYvgtnEzYqqnMKZdVneAt9M0zRErHRT3EbJXzm2/xqH58DZ+vD75+jmNmFBa";
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
+
 
     // Declare Devices
         DcMotor frontleft = null;
@@ -106,11 +108,11 @@ import java.util.List;
         private double medium = 0.5; // medium speed
         private double slow = 0.30; // slow speed
         private double clicksPerInch = 44.56; // empirically measured 4x encoding
-        private double clicksPerDeg = 9.02; // empirically measured 4x encoding
+        private double clicksPerDeg = 9.65 ; // empirically measured 4x encoding
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 309, 470};
+        int[] armLevel = {0, 145, 445};
         //private double 45 = 90 * 9.45 - 570.6
 
         @Override
@@ -172,84 +174,96 @@ import java.util.List;
             // Wait for the game to start (driver presses PLAY)
             waitForStart();
             if (opModeIsActive()) {
-                    while (opModeIsActive()) {
-                        if (tfod != null) {
-                            // getUpdatedRecognitions() will return null if no new information is available since
-                            // the last time that call was made.
-                            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                            if (updatedRecognitions != null) {
-                                telemetry.addData("# Object Detected", updatedRecognitions.size());
-                                // step through the list of recognitions and display boundary info.
-                                int i = 0;
-                                for (Recognition recognition : updatedRecognitions) {
-                                    telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                                    telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                            recognition.getLeft(), recognition.getTop());
-                                    telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                            recognition.getRight(), recognition.getBottom());
-                                    i++;
-                                    //Barcode Position 3 - arm level 3
-                                    if (recognition.getLeft() > 300 && recognition.getTop() > 15) {
-                                        arm.setTargetPosition(armLevel[3]);
-                                        while (arm.isBusy()) {
-                                        }
-                                    }
-                                    //Barcode Position 2 - arm level 2
-                                    else if (recognition.getLeft() < 300 && recognition.getTop() < 5) {
-                                        arm.setTargetPosition(armLevel[1]);
-                                        while (arm.isBusy()) {
-                                        }
-                                    }
-                                    //Barcode Position 1 - arm level 1
-                                    else if (recognition.getLeft() < 110 && recognition.getTop() < 5) {
-                                        arm.setTargetPosition(armLevel[2]);
-                                        while (arm.isBusy()) {
-                                        }
-                                        continue;
+                while (opModeIsActive()) {
+                    if (tfod != null) {
+                        // getUpdatedRecognitions() will return null if no new information is available since
+                        // the last time that call was made.
+                        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                        if (updatedRecognitions != null) {
+                            telemetry.addData("# Object Detected", updatedRecognitions.size());
+                            // step through the list of recognitions and display boundary info.
+                            int i = 0;
+                            for (Recognition recognition : updatedRecognitions) {
+                                telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                                telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                        recognition.getLeft(), recognition.getTop());
+                                telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                        recognition.getRight(), recognition.getBottom());
+                                i++;
+                                //Barcode Position 3 - arm level 3
+                                if (recognition.getLeft() > 300 && recognition.getTop() > 15) {
+                                    arm.setTargetPosition(armLevel[3]);
+                                    while (arm.isBusy()) {
                                     }
                                 }
-                                telemetry.update();
-
+                                //Barcode Position 2 - arm level 2
+                                else if (recognition.getLeft() < 300 && recognition.getTop() < 5) {
+                                    arm.setTargetPosition(armLevel[2]);
+                                    while (arm.isBusy()) {
+                                    }
+                                }
+                                //Barcode Position 1 - arm level 1
+                                else if (recognition.getLeft() < 110 && recognition.getTop() < 5) {
+                                    arm.setTargetPosition(armLevel[1]);
+                                    while (arm.isBusy()) {
+                                    }
+                                }
                             }
+                            telemetry.update();
+
+                        }
+                        if (arm.getCurrentPosition() > 100) {
+                            break;
                         }
                     }
                 }
             }
+        }
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             //All moveforwards with number 5 need to be calculated still
-            moveForward(6, medium); // set up position to turn and back up into delivery mechanism
+            moveForward(11, medium); // set up position to turn and back up into side of delivery mechanism
 
-            turnClockwise(-90, medium);
+            turnClockwise(90, medium);
 
-            moveForward(-15, slow); //this will make it go backward into the carousel
+            moveForward(-18, slow); //this will make it go backward into side of the carousel
 
-            spinnerMov(21, fast);
+            turnClockwise(-90,medium); // set up position for delivery
 
-            moveForward(3, fast); //Will make it move forward into direction of Hub
+            moveForward(-1, slow);
 
-            turnClockwise(46, medium); //this should perform a 45 degree turn
+            spinnerMov(-21, fast);
+/*
+            moveForward(5, fast); //Will make it move forward from carousel
 
-            moveForward(31, medium); //if not near the hub
+            turnClockwise(90, medium); //this should perform a 90 degree turn
+
+            arm.setTargetPosition(armLevel[2]);
+            while (arm.isBusy()) {}
+
+            moveForward(16, medium); //half way to hub
+
+            turnClockwise(-47, medium); // turning at a 45 degree towards hub
+
+            moveForward(19, medium); // moves rest of way to hub
 
             intakePosition(5, fast);
             while (intake.isBusy()) {}
 
-            moveForward(-11, fast);
+            moveForward(-10, fast); // backing away from hub
 
-            turnClockwise(-43, medium); //this should perform a 45 degree turn
+            turnClockwise(43, medium); //this should perform a 45 degree turn
 
             arm.setTargetPosition(armLevel[1]);
             while (arm.isBusy()) {}
 
-            moveForward(85, fast); // moving into warehouse park
+            moveForward(75, fast); // moving into warehouse park
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
-
+*/
 
         }
-
     private void initVuforia () {
 
         /*
@@ -503,7 +517,6 @@ import java.util.List;
             // wait for move to complete
             while (frontleft.isBusy() && frontright.isBusy() &&
                     backleft.isBusy() && backright.isBusy()) {
-                
 
                 // Display it for the driver.
                 telemetry.addLine("Turn Clockwise");
@@ -513,12 +526,6 @@ import java.util.List;
                         backright.getCurrentPosition());
                 telemetry.update();
             }
-            try {
-                    Thread.sleep(5);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            
 
             // Stop all motion;
             frontleft.setPower(0);

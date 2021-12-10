@@ -75,7 +75,7 @@ import java.util.List;
 
     @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name="CameraMainAutoBlue", group="Linear Opmode")  // @TeleOp(...) is the other common choice
 // @Disabled
-    public class CameraTestMainAutoBlue extends LinearOpMode {
+    public class CameraMainAutoBlue extends LinearOpMode {
 
     //Camera SetUp
     private static final String TFOD_MODEL_ASSET = "Team_Element_V2.tflite";
@@ -192,20 +192,20 @@ import java.util.List;
                                         recognition.getRight(), recognition.getBottom());
                                 i++;
                                 //Barcode Position 3 - arm level 3
-                                if (recognition.getLeft() > 300 && recognition.getTop() > 15) {
+                                if (recognition.getRight() > 490 && recognition.getBottom() > 260) {
                                     arm.setTargetPosition(armLevel[3]);
                                     while (arm.isBusy()) {
                                     }
                                 }
                                 //Barcode Position 2 - arm level 2
-                                else if (recognition.getLeft() < 300 && recognition.getTop() < 5) {
-                                    arm.setTargetPosition(armLevel[1]);
+                                else if (recognition.getRight() > 300 && recognition.getBottom() > 200) {
+                                    arm.setTargetPosition(armLevel[2]);
                                     while (arm.isBusy()) {
                                     }
                                 }
                                 //Barcode Position 1 - arm level 1
-                                else if (recognition.getLeft() < 110 && recognition.getTop() < 5) {
-                                    arm.setTargetPosition(armLevel[2]);
+                                else if (recognition.getRight() < 210 && recognition.getBottom() < 275) {
+                                    arm.setTargetPosition(armLevel[1]);
                                     while (arm.isBusy()) {
                                     }
                                 }
@@ -227,7 +227,7 @@ import java.util.List;
         // *****************Dead reckoning list*************
         // Distances in inches, angles in deg, speed 0.0 to 0.6
 
-        moveForward(21, fast); //Move towards the Hub
+        moveForward(19, fast); //Move towards the Hub
 
         intakePosition(5, fast); //Outake in the huh
         while (intake.isBusy()) {
