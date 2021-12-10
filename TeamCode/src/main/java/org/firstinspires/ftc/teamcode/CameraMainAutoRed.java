@@ -79,7 +79,7 @@ import java.util.List;
     public class CameraMainAutoRed extends LinearOpMode {
 
     //Camera SetUp
-    private static final String TFOD_MODEL_ASSET = "Team_Element_Red.tflite";
+    private static final String TFOD_MODEL_ASSET = "Team_Element_V2.tflite";
     private static final String[] LABELS = {
             "Team_Element"
     };
@@ -189,19 +189,19 @@ import java.util.List;
                                             recognition.getRight(), recognition.getBottom());
                                     i++;
                                     //Barcode Position 3 - arm level 3
-                                    if (recognition.getLeft() > 510 /*re-calculate*/ && recognition.getTop() > 150/*re-calculate*/) {
+                                    if (recognition.getRight() > 510 /*re-calculate*/ && recognition.getBottom() > 150/*re-calculate*/) {
                                         arm.setTargetPosition(armLevel[3]);
                                         while (arm.isBusy()) {
                                         }
                                     }
                                     //Barcode Position 2 - arm level 2
-                                    else if (recognition.getLeft() > 350/*re-calculate*/ && recognition.getTop() > 150/*re-calculate*/) {
+                                    else if (recognition.getRight() > 350/*re-calculate*/ && recognition.getBottom() > 150/*re-calculate*/) {
                                         arm.setTargetPosition(armLevel[2]);
                                         while (arm.isBusy()) {
                                         }
                                     }
                                     //Barcode Position 1 - arm level 1
-                                    else if (recognition.getLeft() < 350/*re-calculate*/ && recognition.getTop() < 350/*re-calculate*/) {
+                                    else if (recognition.getRight() < 350/*re-calculate*/ && recognition.getBottom() < 350/*re-calculate*/) {
                                         arm.setTargetPosition(armLevel[1]);
                                         while (arm.isBusy()) {
                                         }

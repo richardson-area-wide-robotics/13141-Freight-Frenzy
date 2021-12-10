@@ -78,7 +78,7 @@ import java.util.List;
     public class CameraTPAutonRed extends LinearOpMode {
 
     //Camera SetUp
-    private static final String TFOD_MODEL_ASSET = "Team_Element_Red.tflite";
+    private static final String TFOD_MODEL_ASSET = "Team_Element_V2.tflite";
     private static final String[] LABELS = {
             "Team_Element"
     };
@@ -189,19 +189,19 @@ import java.util.List;
                                             recognition.getRight(), recognition.getBottom());
                                     i++;
                                     //Barcode Position 3 - arm level 3
-                                    if (recognition.getLeft() > 500/*Re-calculate*/ && recognition.getTop() > 130/*Re-calculate*/) {
+                                    if (recognition.getRight() > 500/*Re-calculate*/ && recognition.getBottom() > 130/*Re-calculate*/) {
                                         arm.setTargetPosition(armLevel[3]);
                                         while (arm.isBusy()) {
                                         }
                                     }
                                     //Barcode Position 2 - arm level 2
-                                    else if (recognition.getLeft() > 350/*Re-calculate*/ && recognition.getTop() > 150/*Re-calculate*/) {
+                                    else if (recognition.getRight() > 300/*Re-calculate*/ && recognition.getBottom() > 150/*Re-calculate*/) {
                                         arm.setTargetPosition(armLevel[2]);
                                         while (arm.isBusy()) {
                                         }
                                     }
                                     //Barcode Position 1 - arm level 1
-                                    else if (recognition.getLeft() < 350/*Re-calculate*/ && recognition.getTop() < 375/*Re-calculate*/) {
+                                    else if (recognition.getRight() < 300/*Re-calculate*/ && recognition.getBottom() < 375/*Re-calculate*/) {
                                         arm.setTargetPosition(armLevel[1]);
                                         while (arm.isBusy()) {
                                         }
@@ -217,6 +217,7 @@ import java.util.List;
                     }
                 }
             }
+
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
             //All moveforwards with number 5 need to be calculated still
@@ -241,10 +242,12 @@ import java.util.List;
 
             turnClockwise(85, medium);
 
-            moveForward(-34, medium); //move into the freight parking
+            moveForward(-35, medium); //move into the freight parking
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
+
+            moveRight(4, fast);
 
         }
     private void initVuforia () {

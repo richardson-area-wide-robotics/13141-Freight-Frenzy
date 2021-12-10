@@ -79,7 +79,7 @@ import java.util.List;
     public class CameraFullV2AutonRed extends LinearOpMode {
 
     //Camera SetUp
-    private static final String TFOD_MODEL_ASSET = "Team_Element_Red.tflite";
+    private static final String TFOD_MODEL_ASSET = "Team_Element_V2.tflite";
     private static final String[] LABELS = {
             "Team_Element"
     };
@@ -112,7 +112,7 @@ import java.util.List;
         private double tol = .1 * clicksPerInch;
         private double armPower = 1.0;
         int armPosition = 0;
-        int[] armLevel = {0, 145, 445};
+        int[] armLevel = {0, 145, 309, 445};
         //private double 45 = 90 * 9.45 - 570.6
 
         @Override
@@ -191,19 +191,19 @@ import java.util.List;
                                         recognition.getRight(), recognition.getBottom());
                                 i++;
                                 //Barcode Position 3 - arm level 3
-                                if (recognition.getLeft() > 500/*Re-calculate*/ && recognition.getTop() > 130/*Re-calculate*/) {
+                                if (recognition.getRight() > 500/*Re-calculate*/ && recognition.getBottom() > 130/*Re-calculate*/) {
                                     arm.setTargetPosition(armLevel[3]);
                                     while (arm.isBusy()) {
                                     }
                                 }
                                 //Barcode Position 2 - arm level 2
-                                else if (recognition.getLeft() > 350/*Re-calculate*/ && recognition.getTop() > 150/*Re-calculate*/) {
+                                else if (recognition.getRight() > 350/*Re-calculate*/ && recognition.getBottom() > 150/*Re-calculate*/) {
                                     arm.setTargetPosition(armLevel[2]);
                                     while (arm.isBusy()) {
                                     }
                                 }
                                 //Barcode Position 1 - arm level 1
-                                else if (recognition.getLeft() < 350/*Re-calculate*/ && recognition.getTop() < 375/*Re-calculate*/) {
+                                else if (recognition.getRight() < 350/*Re-calculate*/ && recognition.getBottom() < 375/*Re-calculate*/) {
                                     arm.setTargetPosition(armLevel[1]);
                                     while (arm.isBusy()) {
                                     }
