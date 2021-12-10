@@ -194,13 +194,13 @@ import java.util.List;
                                         }
                                     }
                                     //Barcode Position 2 - arm level 2
-                                    else if (recognition.getRight() > 450/*re-calculate*/ && recognition.getBottom() > 230/*re-calculate*/) {
+                                    else if (recognition.getRight() > 320/*re-calculate*/ && recognition.getBottom() > 210/*re-calculate*/) {
                                         arm.setTargetPosition(armLevel[2]);
                                         while (arm.isBusy()) {
                                         }
                                     }
                                     //Barcode Position 1 - arm level 1
-                                    else if (recognition.getRight() < 450/*re-calculate*/ && recognition.getBottom() < 350/*re-calculate*/) {
+                                    else if (recognition.getRight() < 300/*re-calculate*/ && recognition.getBottom() < 350/*re-calculate*/) {
                                         arm.setTargetPosition(armLevel[1]);
                                         while (arm.isBusy()) {
                                         }
