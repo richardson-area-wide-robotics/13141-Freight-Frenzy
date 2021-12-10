@@ -189,7 +189,7 @@ import java.util.List;
                                             recognition.getRight(), recognition.getBottom());
                                     i++;
                                     //Barcode Position 3 - arm level 3
-                                    if (recognition.getRight() > 510 /*re-calculate*/ && recognition.getBottom() > 150/*re-calculate*/) {
+                                    if (recognition.getRight() > 510 /*re-calculate*/ && recognition.getBottom()   > 150/*re-calculate*/) {
                                         arm.setTargetPosition(armLevel[3]);
                                         while (arm.isBusy()) {
                                         }

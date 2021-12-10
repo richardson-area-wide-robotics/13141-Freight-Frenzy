@@ -74,7 +74,7 @@ import java.util.List;
 
 
     @Autonomous(name="CameraFullV2AutonBlue", group="Linear Opmode")  // @TeleOp(...) is the other common choice
-@Disabled
+//@Disabled
     public class CameraFullV2AutonBlue extends LinearOpMode {
 
     //Camera SetUp
