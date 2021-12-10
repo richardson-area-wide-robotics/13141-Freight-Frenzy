@@ -221,15 +221,22 @@ import java.util.List;
             }
 
         }
-
+        tfod.deactivate(); //remove if need to (not needed but good to not burn out power
 
 
         // *****************Dead reckoning list*************
         // Distances in inches, angles in deg, speed 0.0 to 0.6
+        if (arm.getCurrentPosition() < 400){
+            moveForward(20,fast);
+        }
+        else if (arm.getCurrentPosition() < 250) {
+            moveForward(20,fast);
+        }
+        else {
+            moveForward(19, fast); //Move towards the Hub
+        }
 
-        moveForward(19, fast); //Move towards the Hub
-
-        intakePosition(5, fast); //Outake in the huh
+        intakePosition(5, fast); //Outake in the hub
         while (intake.isBusy()) {
         }
 

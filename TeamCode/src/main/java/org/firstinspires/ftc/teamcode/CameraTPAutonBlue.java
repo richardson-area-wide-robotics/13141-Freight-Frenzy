@@ -188,7 +188,7 @@ import java.util.List;
                                             recognition.getRight(), recognition.getBottom());
                                     i++;
                                     //Barcode Position 3 - arm level 3
-                                    if (recognition.getRight() > 590 /*re-calculate*/ && recognition.getBottom() < 300/*re-calculate*/) {
+                                    if (recognition.getRight() > 590 /*re-calculate*/ && recognition.getBottom() > 150/*re-calculate*/) {
                                         arm.setTargetPosition(armLevel[3]);
                                         while (arm.isBusy()) {
                                         }
@@ -200,7 +200,7 @@ import java.util.List;
                                         }
                                     }
                                     //Barcode Position 1 - arm level 1
-                                    else if (recognition.getRight() < 230/*re-calculate*/ && recognition.getBottom() < 350/*re-calculate*/) {
+                                    else if (recognition.getRight() < 450/*re-calculate*/ && recognition.getBottom() < 350/*re-calculate*/) {
                                         arm.setTargetPosition(armLevel[1]);
                                         while (arm.isBusy()) {
                                         }
@@ -223,7 +223,16 @@ import java.util.List;
 
             turnClockwise(-57, medium);
 
-            moveForward(24, fast); //this will make it go towards the hub
+            if (arm.getCurrentPosition() < 400){
+                moveForward(24,fast);
+            }
+            else if (arm.getCurrentPosition() < 250) {
+                moveForward(23,fast);
+            }
+            else {
+                moveForward(22, fast); //this will make it go towards the hub
+            }
+
             
             intakePosition(5, fast);
             while (intake.isBusy()) {}
