@@ -189,19 +189,19 @@ import java.util.List;
                                             recognition.getRight(), recognition.getBottom());
                                     i++;
                                     //Barcode Position 3 - arm level 3
-                                    if (recognition.getLeft() > 300 /*re-calculate*/ && recognition.getTop() > 15/*re-calculate*/) {
+                                    if (recognition.getLeft() > 510 /*re-calculate*/ && recognition.getTop() > 150/*re-calculate*/) {
                                         arm.setTargetPosition(armLevel[3]);
                                         while (arm.isBusy()) {
                                         }
                                     }
                                     //Barcode Position 2 - arm level 2
-                                    else if (recognition.getLeft() < 300/*re-calculate*/ && recognition.getTop() < 5/*re-calculate*/) {
+                                    else if (recognition.getLeft() > 350/*re-calculate*/ && recognition.getTop() > 150/*re-calculate*/) {
                                         arm.setTargetPosition(armLevel[2]);
                                         while (arm.isBusy()) {
                                         }
                                     }
                                     //Barcode Position 1 - arm level 1
-                                    else if (recognition.getLeft() < 110/*re-calculate*/ && recognition.getTop() < 5/*re-calculate*/) {
+                                    else if (recognition.getLeft() < 350/*re-calculate*/ && recognition.getTop() < 350/*re-calculate*/) {
                                         arm.setTargetPosition(armLevel[1]);
                                         while (arm.isBusy()) {
                                         }
@@ -219,7 +219,15 @@ import java.util.List;
             }
             // *****************Dead reckoning list*************
             // Distances in inches, angles in deg, speed 0.0 to 0.6
-            moveForward(20, fast);
+            if (arm.getCurrentPosition() < 400){
+                moveForward(20,fast);
+            }
+            else if (arm.getCurrentPosition() < 250) {
+                moveForward(20,fast);
+            }
+            else {
+                moveForward(19, fast); //Move towards the Hub
+            }
             
             intakePosition(5, fast);
             while (intake.isBusy()) {}

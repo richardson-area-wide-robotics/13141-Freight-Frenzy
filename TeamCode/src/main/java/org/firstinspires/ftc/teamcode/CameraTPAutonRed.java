@@ -189,19 +189,19 @@ import java.util.List;
                                             recognition.getRight(), recognition.getBottom());
                                     i++;
                                     //Barcode Position 3 - arm level 3
-                                    if (recognition.getLeft() > 300 /*re-calculate*/ && recognition.getTop() > 15/*re-calculate*/) {
+                                    if (recognition.getLeft() > 500/*Re-calculate*/ && recognition.getTop() > 130/*Re-calculate*/) {
                                         arm.setTargetPosition(armLevel[3]);
                                         while (arm.isBusy()) {
                                         }
                                     }
                                     //Barcode Position 2 - arm level 2
-                                    else if (recognition.getLeft() < 300/*re-calculate*/ && recognition.getTop() < 5/*re-calculate*/) {
+                                    else if (recognition.getLeft() > 350/*Re-calculate*/ && recognition.getTop() > 150/*Re-calculate*/) {
                                         arm.setTargetPosition(armLevel[2]);
                                         while (arm.isBusy()) {
                                         }
                                     }
                                     //Barcode Position 1 - arm level 1
-                                    else if (recognition.getLeft() < 110/*re-calculate*/ && recognition.getTop() < 5/*re-calculate*/) {
+                                    else if (recognition.getLeft() < 350/*Re-calculate*/ && recognition.getTop() < 375/*Re-calculate*/) {
                                         arm.setTargetPosition(armLevel[1]);
                                         while (arm.isBusy()) {
                                         }
@@ -224,7 +224,15 @@ import java.util.List;
 
             turnClockwise(60, medium);
 
-            moveForward(23, fast); //this will make it go forward into the hub
+            if (arm.getCurrentPosition() < 400){
+                moveForward(23,fast);
+            }
+            else if (arm.getCurrentPosition() < 250) {
+                moveForward(22,fast);
+            }
+            else {
+                moveForward(21, fast); //this will make it go towards the hub
+            }
 
             intakePosition(5, fast);
             while (intake.isBusy()) {}

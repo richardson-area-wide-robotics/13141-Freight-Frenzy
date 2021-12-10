@@ -74,7 +74,7 @@ import java.util.List;
 
 
 
-    @Autonomous(name="CameraFullAutonRed", group="Linear Opmode")  // @TeleOp(...) is the other common choice
+    @Autonomous(name="CameraFullV2AutonRed", group="Linear Opmode")  // @TeleOp(...) is the other common choice
 // @Disabled
     public class CameraFullV2AutonRed extends LinearOpMode {
 
@@ -191,19 +191,19 @@ import java.util.List;
                                         recognition.getRight(), recognition.getBottom());
                                 i++;
                                 //Barcode Position 3 - arm level 3
-                                if (recognition.getLeft() > 300 && recognition.getTop() > 15) {
+                                if (recognition.getLeft() > 500/*Re-calculate*/ && recognition.getTop() > 130/*Re-calculate*/) {
                                     arm.setTargetPosition(armLevel[3]);
                                     while (arm.isBusy()) {
                                     }
                                 }
                                 //Barcode Position 2 - arm level 2
-                                else if (recognition.getLeft() < 300 && recognition.getTop() < 5) {
+                                else if (recognition.getLeft() > 350/*Re-calculate*/ && recognition.getTop() > 150/*Re-calculate*/) {
                                     arm.setTargetPosition(armLevel[2]);
                                     while (arm.isBusy()) {
                                     }
                                 }
                                 //Barcode Position 1 - arm level 1
-                                else if (recognition.getLeft() < 110 && recognition.getTop() < 5) {
+                                else if (recognition.getLeft() < 350/*Re-calculate*/ && recognition.getTop() < 375/*Re-calculate*/) {
                                     arm.setTargetPosition(armLevel[1]);
                                     while (arm.isBusy()) {
                                     }
@@ -245,7 +245,15 @@ import java.util.List;
 
             turnClockwise(-47, medium); // turning at a 45 degree towards hub
 
-            moveForward(19, medium); // moves rest of way to hub
+              if (arm.getCurrentPosition() < 400){
+                moveForward(19, medium); // moves rest of way to hub
+            }
+            else if (arm.getCurrentPosition() < 250) {
+                moveForward(19,medium);
+            }
+            else {
+                moveForward(18, fast); //this will make it go towards the hub
+            }
 
             intakePosition(5, fast);
             while (intake.isBusy()) {}
