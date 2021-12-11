@@ -143,6 +143,7 @@ import java.util.List;
             frontleft.setDirection(DcMotor.Direction.FORWARD);
             backright.setDirection(DcMotor.Direction.REVERSE);
             backleft.setDirection(DcMotor.Direction.FORWARD);
+            spinner.setDirection(DcMotor.Direction.Reverse);
 
             // Set the drive motor run modes:
             frontleft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -232,8 +233,8 @@ import java.util.List;
 
             moveForward(-1, slow);
 
-            spinnerMov(-21, fast);
-/*
+            spinnerMov(21, fast);
+
             moveForward(5, fast); //Will make it move forward from carousel
 
             turnClockwise(90, medium); //this should perform a 90 degree turn
@@ -269,7 +270,7 @@ import java.util.List;
 
             arm.setTargetPosition(armLevel[0]);
             while (arm.isBusy()) {}
-*/
+
 
         }
     private void initVuforia () {
