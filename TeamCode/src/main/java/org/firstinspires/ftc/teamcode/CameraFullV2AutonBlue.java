@@ -222,7 +222,7 @@ import java.util.List;
             //All moveforwards with number 5 need to be calculated still
             moveForward(6, medium); // set up position to turn and back up into delivery mechanism
 
-            turnClockwise(-90, medium);
+            turnClockwise(-80, medium);
 
             moveForward(-15, slow); //this will make it go backward into the carousel
 
@@ -230,7 +230,7 @@ import java.util.List;
 
             moveForward(3, fast); //Will make it move forward into direction of Hub
 
-            turnClockwise(46, medium); //this should perform a 45 degree turn
+            turnClockwise(41, medium); //this should perform a 45 degree turn
 
             if (arm.getCurrentPosition() < 400){
                 moveForward(31,medium);
@@ -247,7 +247,7 @@ import java.util.List;
 
             moveForward(-11, fast);
 
-            turnClockwise(-43, medium); //this should perform a 45 degree turn
+            turnClockwise(-45, medium); //this should perform a 45 degree turn
 
             arm.setTargetPosition(armLevel[1]);
             while (arm.isBusy()) {}
